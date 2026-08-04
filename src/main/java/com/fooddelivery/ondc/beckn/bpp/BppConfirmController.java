@@ -2,8 +2,8 @@ package com.fooddelivery.ondc.beckn.bpp;
 
 import org.springframework.transaction.annotation.Transactional;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fooddelivery.ondc.dto.OndcAckResponse;
-import com.fooddelivery.ondc.dto.OndcError;
 import com.fooddelivery.ondc.dto.OndcRequest;
 import com.fooddelivery.ondc.entity.OndcTransaction;
 import com.fooddelivery.ondc.repository.OndcTransactionRepository;
@@ -24,18 +24,23 @@ import static com.fooddelivery.ondc.config.KafkaConfig.TOPIC_ONDC_ORDER_CREATED;
  * 
  * CRITICAL: Duplicate confirm with same transaction_id is handled idempotently
  * — returns existing order, does NOT create a duplicate.
+ * 
+ * CRITICAL: Provider ID and order details are extracted from the incoming request,
+ * not hardcoded. Financial data comes from the locked quote in the init phase.
  */
 @RestController
 @Slf4j
 @RequiredArgsConstructor
-@Transactional
 public class BppConfirmController {
 
     private final OndcSchemaValidator schemaValidator;
     private final OndcTransactionRepository transactionRepository;
     private final KafkaTemplate<String, String> kafkaTemplate;
+    private final BppCallbackService callbackService;
+    private final ObjectMapper objectMapper;
 
     @PostMapping("/confirm")
+    @Transactional
     public ResponseEntity<OndcAckResponse> confirm(@RequestBody OndcRequest request) {
         log.info("Received /confirm from BAP: {}, transaction_id: {}",
                 request.getContext().getBapId(), request.getContext().getTransactionId());
@@ -70,6 +75,9 @@ public class BppConfirmController {
                 request.getContext().getTransactionId(),
                 serializeRequest(request));
 
+        // Dispatch async on_confirm callback — will fetch real provider/order details
+        callbackService.processConfirmAsync(request);
+
         log.info("ACK sent for /confirm. Order dispatched to Kafka. transaction_id: {}",
                 request.getContext().getTransactionId());
         return ResponseEntity.ok(OndcAckResponse.ack(request.getContext()));
@@ -77,7 +85,7 @@ public class BppConfirmController {
 
     private String serializeRequest(OndcRequest request) {
         try {
-            return new com.fasterxml.jackson.databind.ObjectMapper().writeValueAsString(request);
+            return objectMapper.writeValueAsString(request);
         } catch (Exception e) {
             throw new IllegalStateException("Failed to serialize ONDC confirm request", e);
         }

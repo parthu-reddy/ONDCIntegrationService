@@ -1,9 +1,16 @@
 package com.fooddelivery.ondc.fulfillment;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fooddelivery.ondc.beckn.bpp.BppCallbackService;
+import com.fooddelivery.ondc.dto.OndcContext;
+import com.fooddelivery.ondc.entity.OndcTransaction;
+import com.fooddelivery.ondc.repository.OndcTransactionRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
+
+import java.util.Map;
 
 import static com.fooddelivery.ondc.config.KafkaConfig.TOPIC_ONDC_ORDER_STATUS_CHANGED;
 
@@ -20,25 +27,47 @@ public class ProactiveStatusPublisher {
 
     private final FulfillmentStateMachine stateMachine;
     private final OndcFulfillmentMapper fulfillmentMapper;
+    private final ObjectMapper objectMapper;
+    private final OndcTransactionRepository transactionRepository;
+    private final BppCallbackService callbackService;
 
     @KafkaListener(topics = TOPIC_ONDC_ORDER_STATUS_CHANGED, groupId = "ondc-status-group")
     public void handleStatusChange(String event) {
         log.info("Received order status change event: {}", event);
         try {
-            com.fasterxml.jackson.databind.ObjectMapper mapper = new com.fasterxml.jackson.databind.ObjectMapper();
-            java.util.Map<String, Object> eventData = mapper.readValue(event, new com.fasterxml.jackson.core.type.TypeReference<>() {});
+            java.util.Map<String, Object> eventData = objectMapper.readValue(event, new com.fasterxml.jackson.core.type.TypeReference<>() {});
             
             String transactionId = (String) eventData.get("transactionId");
             String internalStatus = (String) eventData.get("status");
             if (transactionId == null || internalStatus == null) return;
             
-            // 2. Map internal status to ONDC fulfillment state
+            // Map internal status to ONDC fulfillment state
             OndcFulfillmentState newState = fulfillmentMapper.mapFromInternalStatus(internalStatus);
             stateMachine.transition(transactionId, newState);
             
-            // In a real implementation we would fetch the BAP URI and send an /on_status callback
-            // For now, state is transitioned successfully.
-            log.info("Transitioned ONDC transaction {} to {}", transactionId, newState);
+            // Retrieve transaction to get BAP details
+            OndcTransaction txn = transactionRepository.findTopByTransactionIdOrderByCreatedAtDesc(transactionId)
+                .orElseThrow(() -> new IllegalStateException("Transaction not found for id: " + transactionId));
+            
+            // Reconstruct context
+            OndcContext context = new OndcContext();
+            context.setTransactionId(transactionId);
+            context.setBapId(txn.getBapId());
+            // In full implementation, bapUri is stored in DB. We use a proxy here or fallback.
+            // Assuming bapId acts as URI for simplified purposes or fetch from registry
+            context.setBapUri(txn.getBapId()); 
+            context.setBppId(txn.getBppId());
+
+            // Send on_status
+            Map<String, Object> onStatusPayload = Map.of(
+                    "fulfillment", Map.of(
+                            "state", Map.of("descriptor", Map.of("code", newState.getOndcValue()))
+                    )
+            );
+            
+            callbackService.sendCallbackWithRetry("on_status", context, onStatusPayload);
+            
+            log.info("Transitioned and pushed ONDC transaction {} to {}", transactionId, newState);
         } catch (Exception e) {
             log.error("Failed to process status change event", e);
         }

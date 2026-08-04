@@ -30,9 +30,9 @@ public class OndcFulfillmentMapper {
             case "PICKED_UP", "ORDER_PICKED_UP" -> OndcFulfillmentState.ORDER_PICKED_UP;
             case "DRIVER_AT_CUSTOMER", "AT_DELIVERY" -> OndcFulfillmentState.AT_DELIVERY;
             case "DELIVERED", "ORDER_DELIVERED" -> OndcFulfillmentState.ORDER_DELIVERED;
+            case "CANCELLED", "ORDER_CANCELLED", "ORDER_CANCELLED_BY_ADMIN" -> OndcFulfillmentState.CANCELLED;
             default -> {
-                log.warn("Unknown internal status: '{}'. Defaulting to PENDING.", internalStatus);
-                yield OndcFulfillmentState.PENDING;
+                throw new IllegalArgumentException("Unknown internal status: '" + internalStatus + "'. Cannot safely map to ONDC state.");
             }
         };
     }

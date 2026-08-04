@@ -16,17 +16,19 @@ import org.springframework.web.bind.annotation.RestController;
 
 /**
  * BPP /track endpoint — returns tracking URL/WebSocket for delivery tracking.
+ * Returns ACK synchronously, triggers async /on_track callback with tracking info.
  */
 @RestController
 @Slf4j
 @RequiredArgsConstructor
-@Transactional
 public class BppTrackController {
 
     private final OndcSchemaValidator schemaValidator;
     private final OndcTransactionRepository transactionRepository;
+    private final BppCallbackService callbackService;
 
     @PostMapping("/track")
+    @Transactional
     public ResponseEntity<OndcAckResponse> track(@RequestBody OndcRequest request) {
         log.info("Received /track from BAP: {}, transaction_id: {}",
                 request.getContext().getBapId(), request.getContext().getTransactionId());
@@ -44,7 +46,8 @@ public class BppTrackController {
                 .build();
         transactionRepository.save(txn);
 
-        // TODO: Async processing — generate tracking URL, send on_track callback
+        // Dispatch async on_track callback with tracking URL
+        callbackService.processTrackAsync(request);
 
         return ResponseEntity.ok(OndcAckResponse.ack(request.getContext()));
     }

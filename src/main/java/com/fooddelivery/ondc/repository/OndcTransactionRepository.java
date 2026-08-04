@@ -13,5 +13,6 @@ public interface OndcTransactionRepository extends JpaRepository<OndcTransaction
     Optional<OndcTransaction> findByTransactionIdAndMessageId(String transactionId, String messageId);
     List<OndcTransaction> findByTransactionIdOrderByCreatedAtAsc(String transactionId);
     Optional<OndcTransaction> findByTransactionIdAndAction(String transactionId, String action);
+    Optional<OndcTransaction> findTopByTransactionIdOrderByCreatedAtDesc(String transactionId);
     boolean existsByTransactionIdAndMessageId(String transactionId, String messageId);
 }

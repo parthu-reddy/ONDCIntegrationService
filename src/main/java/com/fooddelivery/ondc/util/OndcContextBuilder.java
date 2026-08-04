@@ -38,7 +38,7 @@ public class OndcContextBuilder {
                 .bppId(ondcProperties.getSubscriberId())
                 .bppUri(incomingContext.getBppUri())
                 .transactionId(incomingContext.getTransactionId())
-                .messageId(UUID.randomUUID().toString())
+                .messageId(incomingContext.getMessageId())
                 .timestamp(DateTimeFormatter.ISO_INSTANT.format(Instant.now()))
                 .build();
     }
@@ -54,7 +54,7 @@ public class OndcContextBuilder {
                 .city(ondcProperties.getCity())
                 .coreVersion("1.2.0")
                 .bapId(ondcProperties.getSubscriberId())
-                .bapUri(ondcProperties.getSubscriberId()) // subscriber_url
+                .bapUri(ondcProperties.getSubscriberUrl()) // subscriber_url
                 .bppId(bppId)
                 .bppUri(bppUri)
                 .transactionId(UUID.randomUUID().toString())

@@ -14,6 +14,7 @@ public enum OndcFulfillmentState {
     PACKED("Packed"),
     ORDER_PICKED_UP("Order-picked-up"),
     ORDER_DELIVERED("Order-delivered"),
+    CANCELLED("Cancelled"),
 
     // Optional states (finer granularity)
     AGENT_ASSIGNED("Agent-assigned"),

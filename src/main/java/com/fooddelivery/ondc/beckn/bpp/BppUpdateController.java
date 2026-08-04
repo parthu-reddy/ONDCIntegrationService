@@ -16,22 +16,25 @@ import org.springframework.web.bind.annotation.RestController;
 
 /**
  * BPP /update endpoint — handles order modifications (partial cancel, returns, etc.).
+ * Returns ACK synchronously, triggers async /on_update callback.
  */
 @RestController
 @Slf4j
 @RequiredArgsConstructor
-@Transactional
 public class BppUpdateController {
 
     private final OndcSchemaValidator schemaValidator;
     private final OndcTransactionRepository transactionRepository;
+    private final BppCallbackService callbackService;
 
     @PostMapping("/update")
+    @Transactional
     public ResponseEntity<OndcAckResponse> update(@RequestBody OndcRequest request) {
         log.info("Received /update from BAP: {}, transaction_id: {}",
                 request.getContext().getBapId(), request.getContext().getTransactionId());
 
         schemaValidator.validateRequest(request);
+        schemaValidator.validateOrderContext(request.getContext());
 
         OndcTransaction txn = OndcTransaction.builder()
                 .transactionId(request.getContext().getTransactionId())
@@ -42,6 +45,9 @@ public class BppUpdateController {
                 .state("RECEIVED")
                 .build();
         transactionRepository.save(txn);
+
+        // Dispatch async on_update callback
+        callbackService.processUpdateAsync(request);
 
         return ResponseEntity.ok(OndcAckResponse.ack(request.getContext()));
     }

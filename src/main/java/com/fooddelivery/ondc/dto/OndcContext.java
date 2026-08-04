@@ -46,7 +46,7 @@ public class OndcContext {
 
     private String timestamp;
 
-    private Integer ttl;
+    private String ttl;
 
     @JsonProperty("key")
     private String key;

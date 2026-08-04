@@ -21,13 +21,14 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @Slf4j
 @RequiredArgsConstructor
-@Transactional
 public class BppStatusController {
 
     private final OndcSchemaValidator schemaValidator;
     private final OndcTransactionRepository transactionRepository;
+    private final BppCallbackService callbackService;
 
     @PostMapping("/status")
+    @Transactional
     public ResponseEntity<OndcAckResponse> status(@RequestBody OndcRequest request) {
         log.info("Received /status from BAP: {}, transaction_id: {}",
                 request.getContext().getBapId(), request.getContext().getTransactionId());
@@ -45,7 +46,8 @@ public class BppStatusController {
                 .build();
         transactionRepository.save(txn);
 
-        // TODO: Async processing — lookup current fulfillment state, send on_status callback
+        // Dispatch async on_status callback with current fulfillment state
+        callbackService.processStatusAsync(request);
 
         return ResponseEntity.ok(OndcAckResponse.ack(request.getContext()));
     }

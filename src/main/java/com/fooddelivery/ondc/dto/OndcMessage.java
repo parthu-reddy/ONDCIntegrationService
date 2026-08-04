@@ -23,4 +23,7 @@ public class OndcMessage {
     private Object tracking;
     private Object payment;
     private Object rating;
+    @com.fasterxml.jackson.annotation.JsonProperty("order_id")
+    private String orderId;
+    private Object settlement;
 }

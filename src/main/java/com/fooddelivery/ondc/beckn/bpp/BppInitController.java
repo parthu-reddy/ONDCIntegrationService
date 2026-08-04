@@ -2,6 +2,8 @@ package com.fooddelivery.ondc.beckn.bpp;
 
 import org.springframework.transaction.annotation.Transactional;
 
+import com.fooddelivery.ondc.client.PaymentServiceClient;
+import com.fooddelivery.ondc.client.RestaurantServiceClient;
 import com.fooddelivery.ondc.dto.OndcAckResponse;
 import com.fooddelivery.ondc.dto.OndcRequest;
 import com.fooddelivery.ondc.entity.OndcTransaction;
@@ -16,19 +18,22 @@ import org.springframework.web.bind.annotation.RestController;
 
 /**
  * BPP /init endpoint — receives billing and delivery details from BAP.
- * Locks the quote and returns initialization details.
+ * Locks the quote and returns initialization details including payment gateway URI.
  * Returns ACK synchronously, triggers async /on_init callback.
+ *
+ * CRITICAL: Payment type and status MUST come from PaymentServiceClient — no mocks.
  */
 @RestController
 @Slf4j
 @RequiredArgsConstructor
-@Transactional
 public class BppInitController {
 
     private final OndcSchemaValidator schemaValidator;
     private final OndcTransactionRepository transactionRepository;
+    private final BppCallbackService callbackService;
 
     @PostMapping("/init")
+    @Transactional
     public ResponseEntity<OndcAckResponse> init(@RequestBody OndcRequest request) {
         log.info("Received /init from BAP: {}, transaction_id: {}",
                 request.getContext().getBapId(), request.getContext().getTransactionId());
@@ -46,7 +51,8 @@ public class BppInitController {
                 .build();
         transactionRepository.save(txn);
 
-        // TODO: Async processing — lock quote, prepare payment details, on_init callback
+        // ACK immediately, then dispatch async init processing
+        callbackService.processInitAsync(request);
 
         return ResponseEntity.ok(OndcAckResponse.ack(request.getContext()));
     }
