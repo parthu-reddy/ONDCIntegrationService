@@ -1,0 +1,41 @@
+spring:
+  profiles:
+    active: dev
+  datasource:
+    url: jdbc:postgresql://localhost:5432/ondc_db
+    username: ondc_user
+    password: ondc_password
+    driver-class-name: org.postgresql.Driver
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      group-id: ondc-group
+      auto-offset-reset: earliest
+  data:
+    redis:
+      host: localhost
+      port: 6379
+  cloud:
+    openfeign:
+      client:
+        config:
+          default:
+            connectTimeout: 5000
+            readTimeout: 5000
+
+ondc:
+  subscriber-id: ${ONDC_SUBSCRIBER_ID:bap.fooddelivery.com}
+  subscriber-url: ${ONDC_SUBSCRIBER_URL:https://bap.fooddelivery.com/ondc}
+  domain: ${ONDC_DOMAIN:ONDC:RET11}
+  city: ${ONDC_CITY:std:080}
+  country: ${ONDC_COUNTRY:IND}
+  registry-url: ${ONDC_REGISTRY_URL:https://staging.registry.ondc.org}
+  crypto:
+    private-signing-key: ${ONDC_PRIVATE_SIGNING_KEY:default-key-dev-only}
+    public-signing-key: ${ONDC_PUBLIC_SIGNING_KEY:default-key-dev-only}
+    private-encryption-key: ${ONDC_PRIVATE_ENC_KEY:default-key-dev-only}
+    public-encryption-key: ${ONDC_PUBLIC_ENC_KEY:default-key-dev-only}
+    uk-id: ${ONDC_UK_ID:default-uk-id}

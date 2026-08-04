@@ -1,0 +1,114 @@
+spring:
+  application:
+    name: ondc-integration-service
+  config:
+    import: optional:configserver:http://config-service:8888
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/ondc_integration_db
+    username: ${DB_USERNAME:postgres}
+    password: ${DB_PASSWORD:postgres}
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    baseline-on-migrate: true
+
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+    consumer:
+      group-id: ondc-integration-group
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+
+server:
+  port: ${SERVER_PORT:8098}
+
+# ONDC configuration — values resolved from ConfigService / environment
+ondc:
+  subscriber-id: ${ONDC_SUBSCRIBER_ID:}
+  subscriber-url: ${ONDC_SUBSCRIBER_URL:}
+  unique-key-id: ${ONDC_UNIQUE_KEY_ID:}
+  domain: "ONDC:RET11"
+  city: "std:080"
+  country: "IND"
+  registry:
+    url: ${ONDC_REGISTRY_URL:https://staging.registry.ondc.org}
+    lookup-cache-ttl-seconds: 3600
+  crypto:
+    signing-private-key: ${ONDC_SIGNING_PRIVATE_KEY:}
+    signing-public-key: ${ONDC_SIGNING_PUBLIC_KEY:}
+    encryption-private-key: ${ONDC_ENCRYPTION_PRIVATE_KEY:}
+    encryption-public-key: ${ONDC_ENCRYPTION_PUBLIC_KEY:}
+    ondc-production-public-key: "MCowBQYDK2VuAyEAvVEyZY91O2yV8w8/CAwVDAnqIZDJJUPdLUUKwLo3K0M="
+  callback:
+    retry-max-attempts: 3
+    retry-backoff-ms: 1000
+  clock-skew-tolerance-seconds: 60
+  fulfillment:
+    max-delivery-radius-km: 7
+    self-pickup-enabled: true
+
+# Eureka
+eureka:
+  client:
+    service-url:
+      defaultZone: ${EUREKA_URL:http://localhost:8761/eureka}
+  instance:
+    prefer-ip-address: true
+
+# Actuator
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus,metrics
+  metrics:
+    export:
+      prometheus:
+        enabled: true
+
+# Resilience4j
+resilience4j:
+  circuitbreaker:
+    instances:
+      ondcRegistry:
+        slidingWindowSize: 10
+        failureRateThreshold: 50
+        waitDurationInOpenState: 30000
+        permittedNumberOfCallsInHalfOpenState: 3
+      ondcCallback:
+        slidingWindowSize: 10
+        failureRateThreshold: 50
+        waitDurationInOpenState: 15000
+        permittedNumberOfCallsInHalfOpenState: 5
+  retry:
+    instances:
+      ondcCallback:
+        maxAttempts: 3
+        waitDuration: 1000
+        exponentialBackoffMultiplier: 2
+
+logging:
+  level:
+    com.fooddelivery.ondc: DEBUG
+    org.springframework.web: INFO
