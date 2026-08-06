@@ -14,7 +14,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.Map;
 
-import static com.fooddelivery.ondc.config.KafkaConfig.TOPIC_ONDC_CATALOG_DELTA;
+import static com.fooddelivery.ondc.config.OndcKafkaConfig.TOPIC_ONDC_CATALOG_DELTA;
 
 /**
  * Listens for catalog delta events from RestaurantApplication (stock/price changes)

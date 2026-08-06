@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import static com.fooddelivery.ondc.config.KafkaConfig.TOPIC_ONDC_SEARCH_REQUEST;
+import static com.fooddelivery.ondc.config.OndcKafkaConfig.TOPIC_ONDC_SEARCH_REQUEST;
 
 /**
  * BPP /search endpoint — receives search intent from BAP via ONDC Gateway.

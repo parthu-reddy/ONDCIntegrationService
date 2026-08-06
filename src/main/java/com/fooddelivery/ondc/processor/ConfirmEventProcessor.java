@@ -1,7 +1,7 @@
 package com.fooddelivery.ondc.processor;
 
 import com.fooddelivery.ondc.beckn.bap.BapConfirmService;
-import com.fooddelivery.ondc.config.KafkaConfig;
+import com.fooddelivery.ondc.config.OndcKafkaConfig;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -20,7 +20,7 @@ public class ConfirmEventProcessor {
 
     private final BapConfirmService bapConfirmService;
 
-    @KafkaListener(topics = KafkaConfig.TOPIC_ONDC_ORDER_CREATED, groupId = "ondc-integration-group")
+    @KafkaListener(topics = OndcKafkaConfig.TOPIC_ONDC_ORDER_CREATED, groupId = "ondc-integration-group")
     public void handleOrderCreated(String eventJson) {
         log.info("Received internal order created event: {}", eventJson);
         try {

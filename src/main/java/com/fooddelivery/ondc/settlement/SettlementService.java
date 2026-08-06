@@ -2,7 +2,7 @@ package com.fooddelivery.ondc.settlement;
 
 import com.fooddelivery.ondc.client.LedgerServiceClient;
 import com.fooddelivery.ondc.client.PaymentServiceClient;
-import com.fooddelivery.ondc.config.KafkaConfig;
+import com.fooddelivery.ondc.config.OndcKafkaConfig;
 import com.fooddelivery.ondc.entity.OndcSettlementRecord;
 import com.fooddelivery.ondc.repository.OndcSettlementRepository;
 import lombok.RequiredArgsConstructor;
@@ -83,7 +83,7 @@ public class SettlementService {
                 "{\"transactionId\":\"%s\",\"type\":\"%s\",\"amount\":%s,\"currency\":\"%s\"}",
                 transactionId, settlementType, amount, currency
             );
-            kafkaTemplate.send(KafkaConfig.TOPIC_ONDC_SETTLEMENT_EVENT, transactionId, eventJson);
+            kafkaTemplate.send(OndcKafkaConfig.TOPIC_ONDC_SETTLEMENT_EVENT, transactionId, eventJson);
             
             record.setStatus("COMPLETED");
             settlementRepository.save(record);

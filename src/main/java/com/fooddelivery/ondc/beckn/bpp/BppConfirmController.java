@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import static com.fooddelivery.ondc.config.KafkaConfig.TOPIC_ONDC_ORDER_CREATED;
+import static com.fooddelivery.ondc.config.OndcKafkaConfig.TOPIC_ONDC_ORDER_CREATED;
 
 /**
  * BPP /confirm endpoint — receives payment confirmation from BAP.

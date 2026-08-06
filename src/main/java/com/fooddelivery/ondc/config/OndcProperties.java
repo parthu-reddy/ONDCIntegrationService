@@ -33,6 +33,7 @@ public class OndcProperties {
         private String url = "https://staging.registry.ondc.org";
         private String gatewayUrl = "https://staging.gateway.ondc.org";
         private int lookupCacheTtlSeconds = 3600;
+        private String verificationId = "default-verification-id";
     }
 
     @Getter

@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Map;
 
-import static com.fooddelivery.ondc.config.KafkaConfig.TOPIC_ONDC_ORDER_STATUS_CHANGED;
+import static com.fooddelivery.ondc.config.OndcKafkaConfig.TOPIC_ONDC_ORDER_STATUS_CHANGED;
 
 /**
  * Listens to Kafka events from CustomerApplication and DeliveryExecutiveApplication

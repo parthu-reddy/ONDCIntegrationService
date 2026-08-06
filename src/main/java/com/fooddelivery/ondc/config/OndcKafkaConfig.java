@@ -9,7 +9,7 @@ import org.springframework.kafka.config.TopicBuilder;
  * Kafka topic definitions for ONDC event streaming.
  */
 @Configuration
-public class KafkaConfig {
+public class OndcKafkaConfig {
 
     public static final String TOPIC_ONDC_SEARCH_REQUEST = "ondc.search.request";
     public static final String TOPIC_ONDC_ORDER_CREATED = "ondc.order.created";

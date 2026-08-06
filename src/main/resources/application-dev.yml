@@ -1,11 +1,13 @@
+server:
+  servlet:
+    context-path: /ondc
+
 spring:
-  profiles:
-    active: dev
   datasource:
-    url: jdbc:oracle:thin:@localhost:1521/FREEPDB1
-    username: ondc_user
-    password: ondc_password
-    driver-class-name: oracle.jdbc.OracleDriver
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/ondc_db}
+    username: ${DB_USERNAME:postgres}
+    password: ${DB_PASSWORD:postgres}
+    driver-class-name: org.postgresql.Driver
   flyway:
     enabled: true
     baseline-on-migrate: true

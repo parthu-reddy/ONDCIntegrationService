@@ -1,7 +1,7 @@
 package com.fooddelivery.ondc.processor;
 
 import com.fooddelivery.ondc.beckn.bap.BapSearchService;
-import com.fooddelivery.ondc.config.KafkaConfig;
+import com.fooddelivery.ondc.config.OndcKafkaConfig;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -20,7 +20,7 @@ public class SearchEventProcessor {
 
     private final BapSearchService bapSearchService;
 
-    @KafkaListener(topics = KafkaConfig.TOPIC_ONDC_SEARCH_REQUEST, groupId = "ondc-integration-group")
+    @KafkaListener(topics = OndcKafkaConfig.TOPIC_ONDC_SEARCH_REQUEST, groupId = "ondc-integration-group")
     public void handleSearchRequest(String eventJson) {
         log.info("Received internal search request: {}", eventJson);
         try {

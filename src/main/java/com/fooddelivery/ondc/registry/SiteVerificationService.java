@@ -21,32 +21,43 @@ public class SiteVerificationService {
     private final Ed25519KeyManager ed25519KeyManager;
     private final OndcProperties ondcProperties;
 
+    private String cachedHtml;
+
     /**
      * Generates the HTML content for ondc-site-verification.html.
      *
      * @return HTML string containing the signed unique request ID in a meta tag
      */
     public String generateVerificationHtml() {
-        String uniqueRequestId = UUID.randomUUID().toString();
-        String signedRequestId = ed25519KeyManager.sign(uniqueRequestId);
-
-        return """
-                <html>
-                <head>
-                    <meta name="ondc-site-verification" content="%s" />
-                </head>
-                <body>
-                    ONDC Site Verification Page
-                </body>
-                </html>
-                """.formatted(signedRequestId);
+        if (cachedHtml == null) {
+            String verificationId = ondcProperties.getRegistry().getVerificationId();
+            if (verificationId == null || verificationId.isBlank()) {
+                verificationId = UUID.randomUUID().toString();
+            }
+            String signedRequestId = ed25519KeyManager.sign(verificationId);
+            
+            cachedHtml = """
+                    <html>
+                    <head>
+                        <meta name="ondc-site-verification" content="%s" />
+                    </head>
+                    <body>
+                        ONDC Site Verification Page
+                    </body>
+                    </html>
+                    """.formatted(signedRequestId);
+        }
+        return cachedHtml;
     }
 
     /**
      * Returns the signed unique request ID for the meta tag.
      */
     public String generateSignedRequestId() {
-        String uniqueRequestId = UUID.randomUUID().toString();
-        return ed25519KeyManager.sign(uniqueRequestId);
+        String verificationId = ondcProperties.getRegistry().getVerificationId();
+        if (verificationId == null || verificationId.isBlank()) {
+            verificationId = UUID.randomUUID().toString();
+        }
+        return ed25519KeyManager.sign(verificationId);
     }
 }

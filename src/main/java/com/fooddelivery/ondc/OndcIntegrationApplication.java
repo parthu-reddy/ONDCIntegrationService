@@ -13,7 +13,7 @@ import com.fooddelivery.ondc.config.OndcProperties;
         "com.fooddelivery.ondc",
         "com.fooddelivery.common"
 })
-@EnableFeignClients
+
 @EnableAsync
 @EnableScheduling
 @EnableConfigurationProperties(OndcProperties.class)

@@ -6,6 +6,8 @@ import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 
+import java.util.HashMap;
+
 /**
  * Maps internal menu/outlet entities to ONDC catalog schema.
  * Brand → Provider, Outlet → Location, MenuItem → Item.
@@ -13,6 +15,12 @@ import java.util.Map;
 @Component
 @Slf4j
 public class OndcCatalogMapper {
+
+    private final DietaryTagMapper dietaryTagMapper;
+
+    public OndcCatalogMapper(DietaryTagMapper dietaryTagMapper) {
+        this.dietaryTagMapper = dietaryTagMapper;
+    }
 
     /**
      * Maps an internal brand map to an ONDC Provider.
@@ -56,19 +64,29 @@ public class OndcCatalogMapper {
      */
     public Map<String, Object> mapMenuItemToItem(Map<String, Object> item) {
         if (item == null) return null;
-        return Map.of(
-                "id", String.valueOf(item.get("id")),
-                "descriptor", Map.of(
-                        "name", item.get("name"),
-                        "short_desc", item.getOrDefault("description", ""),
-                        "images", List.of(item.getOrDefault("imageUrl", ""))
-                ),
-                "price", Map.of(
-                        "currency", "INR",
-                        "value", String.valueOf(item.get("price"))
-                ),
-                "location_id", String.valueOf(item.get("outletId")),
-                "category_id", String.valueOf(item.get("categoryId"))
-        );
+        
+        Map<String, Object> mappedItem = new HashMap<>();
+        mappedItem.put("id", String.valueOf(item.get("id")));
+        mappedItem.put("descriptor", Map.of(
+                "name", item.get("name"),
+                "short_desc", item.getOrDefault("description", ""),
+                "images", List.of(item.getOrDefault("imageUrl", ""))
+        ));
+        mappedItem.put("price", Map.of(
+                "currency", "INR",
+                "value", String.valueOf(item.get("price"))
+        ));
+        mappedItem.put("location_id", String.valueOf(item.get("outletId")));
+        mappedItem.put("category_id", String.valueOf(item.get("categoryId")));
+        
+        if (item.containsKey("dietaryTag") && item.get("dietaryTag") != null) {
+            String ondcTag = dietaryTagMapper.mapToOndcTag((String) item.get("dietaryTag"));
+            mappedItem.put("tags", List.of(
+                Map.of("code", "type", "list", List.of(Map.of("code", "type", "value", "item"))),
+                Map.of("code", "@ondc/org/veg_nonveg", "list", List.of(Map.of("code", ondcTag, "value", "yes")))
+            ));
+        }
+        
+        return mappedItem;
     }
 }
