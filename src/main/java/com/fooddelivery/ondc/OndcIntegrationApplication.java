@@ -9,10 +9,13 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 
 import com.fooddelivery.ondc.config.OndcProperties;
 
+import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
+
 @SpringBootApplication(scanBasePackages = {
         "com.fooddelivery.ondc",
         "com.fooddelivery.common"
 })
+@EnableDiscoveryClient
 
 @EnableAsync
 @EnableScheduling
