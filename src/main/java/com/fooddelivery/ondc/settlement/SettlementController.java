@@ -3,13 +3,10 @@ package com.fooddelivery.ondc.settlement;
 import com.fooddelivery.ondc.dto.OndcAckResponse;
 import com.fooddelivery.ondc.dto.OndcRequest;
 import com.fooddelivery.ondc.util.OndcSchemaValidator;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
@@ -19,10 +16,9 @@ import java.util.concurrent.CompletableFuture;
  * Settlement and reconciliation callback endpoints (RSF 2.0).
  */
 @RestController
-@Slf4j
-@RequiredArgsConstructor
 public class SettlementController {
-
+    @java.lang.SuppressWarnings("all")
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(SettlementController.class);
     private final OndcSchemaValidator schemaValidator;
     private final SettlementService settlementService;
     private final ReconciliationService reconciliationService;
@@ -31,7 +27,6 @@ public class SettlementController {
     public ResponseEntity<OndcAckResponse> settle(@RequestBody OndcRequest request) {
         log.info("Received /settle");
         schemaValidator.validateRequest(request);
-        
         CompletableFuture.runAsync(() -> {
             try {
                 // Simplified extraction for wiring
@@ -52,7 +47,6 @@ public class SettlementController {
                 log.error("Error processing /settle asynchronously", e);
             }
         });
-        
         return ResponseEntity.ok(OndcAckResponse.ack(request.getContext()));
     }
 
@@ -69,7 +63,6 @@ public class SettlementController {
     public ResponseEntity<OndcAckResponse> recon(@RequestBody OndcRequest request) {
         log.info("Received /recon");
         schemaValidator.validateRequest(request);
-        
         CompletableFuture.runAsync(() -> {
             try {
                 if (request.getMessage() != null && request.getMessage().getOrder() != null) {
@@ -88,7 +81,6 @@ public class SettlementController {
                 log.error("Error processing /recon asynchronously", e);
             }
         });
-        
         return ResponseEntity.ok(OndcAckResponse.ack(request.getContext()));
     }
 
@@ -111,5 +103,12 @@ public class SettlementController {
         log.info("Received /on_receiver_recon");
         schemaValidator.validateRequest(request);
         return ResponseEntity.ok(OndcAckResponse.ack(request.getContext()));
+    }
+
+    @java.lang.SuppressWarnings("all")
+    public SettlementController(final OndcSchemaValidator schemaValidator, final SettlementService settlementService, final ReconciliationService reconciliationService) {
+        this.schemaValidator = schemaValidator;
+        this.settlementService = settlementService;
+        this.reconciliationService = reconciliationService;
     }
 }

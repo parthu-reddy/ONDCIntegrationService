@@ -1,12 +1,10 @@
 package com.fooddelivery.ondc.crypto;
 
 import com.fooddelivery.ondc.config.OndcProperties;
-import lombok.extern.slf4j.Slf4j;
 import org.bouncycastle.crypto.params.Ed25519PrivateKeyParameters;
 import org.bouncycastle.crypto.params.Ed25519PublicKeyParameters;
 import org.bouncycastle.crypto.signers.Ed25519Signer;
 import org.springframework.stereotype.Service;
-
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
@@ -15,9 +13,9 @@ import java.util.Base64;
  * Signs outgoing payloads and verifies incoming signatures.
  */
 @Service
-@Slf4j
 public class Ed25519KeyManager {
-
+    @java.lang.SuppressWarnings("all")
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(Ed25519KeyManager.class);
     private final OndcProperties ondcProperties;
 
     public Ed25519KeyManager(OndcProperties ondcProperties) {
@@ -33,12 +31,10 @@ public class Ed25519KeyManager {
     public String sign(byte[] message) {
         byte[] privateKeyBytes = Base64.getDecoder().decode(ondcProperties.getCrypto().getSigningPrivateKey());
         Ed25519PrivateKeyParameters privateKey = new Ed25519PrivateKeyParameters(privateKeyBytes, 0);
-
         Ed25519Signer signer = new Ed25519Signer();
         signer.init(true, privateKey);
         signer.update(message, 0, message.length);
         byte[] signature = signer.generateSignature();
-
         return Base64.getEncoder().encodeToString(signature);
     }
 
@@ -61,13 +57,10 @@ public class Ed25519KeyManager {
         try {
             byte[] publicKeyBytes = Base64.getDecoder().decode(publicKeyB64);
             byte[] signatureBytes = Base64.getDecoder().decode(signatureB64);
-
             Ed25519PublicKeyParameters publicKey = new Ed25519PublicKeyParameters(publicKeyBytes, 0);
-
             Ed25519Signer verifier = new Ed25519Signer();
             verifier.init(false, publicKey);
             verifier.update(message, 0, message.length);
-
             return verifier.verifySignature(signatureBytes);
         } catch (Exception e) {
             log.error("Ed25519 signature verification failed: {}", e.getMessage(), e);

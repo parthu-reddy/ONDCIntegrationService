@@ -2,11 +2,8 @@ package com.fooddelivery.ondc.processor;
 
 import com.fooddelivery.ondc.beckn.bap.BapConfirmService;
 import com.fooddelivery.ondc.config.OndcKafkaConfig;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
-
 import java.util.Map;
 
 /**
@@ -14,10 +11,9 @@ import java.util.Map;
  * triggers ONDC BAP confirm.
  */
 @Service
-@Slf4j
-@RequiredArgsConstructor
 public class ConfirmEventProcessor {
-
+    @java.lang.SuppressWarnings("all")
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(ConfirmEventProcessor.class);
     private final BapConfirmService bapConfirmService;
 
     @KafkaListener(topics = OndcKafkaConfig.TOPIC_ONDC_ORDER_CREATED, groupId = "ondc-integration-group")
@@ -25,8 +21,8 @@ public class ConfirmEventProcessor {
         log.info("Received internal order created event: {}", eventJson);
         try {
             com.fasterxml.jackson.databind.ObjectMapper mapper = new com.fasterxml.jackson.databind.ObjectMapper();
-            Map<String, Object> request = mapper.readValue(eventJson, new com.fasterxml.jackson.core.type.TypeReference<>() {});
-            
+            Map<String, Object> request = mapper.readValue(eventJson, new com.fasterxml.jackson.core.type.TypeReference<>() {
+            });
             String transactionId = (String) request.get("transactionId");
             String bppUri = (String) request.get("bppUri");
             // Assuming BapConfirmService needs transactionId and order payload to confirm
@@ -38,5 +34,10 @@ public class ConfirmEventProcessor {
         } catch (Exception e) {
             log.error("Failed to process order confirm event", e);
         }
+    }
+
+    @java.lang.SuppressWarnings("all")
+    public ConfirmEventProcessor(final BapConfirmService bapConfirmService) {
+        this.bapConfirmService = bapConfirmService;
     }
 }

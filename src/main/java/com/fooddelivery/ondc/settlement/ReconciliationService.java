@@ -1,10 +1,7 @@
 package com.fooddelivery.ondc.settlement;
 
 import com.fooddelivery.ondc.client.LedgerServiceClient;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-
 import java.math.BigDecimal;
 import java.util.Map;
 
@@ -13,10 +10,9 @@ import java.util.Map;
  * for order-level financial reconciliation with the Settlement Agency.
  */
 @Service
-@Slf4j
-@RequiredArgsConstructor
 public class ReconciliationService {
-
+    @java.lang.SuppressWarnings("all")
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(ReconciliationService.class);
     private final SettlementService settlementService;
     private final SettlementMapper settlementMapper;
     private final LedgerServiceClient ledgerServiceClient;
@@ -26,20 +22,15 @@ public class ReconciliationService {
      */
     public java.util.List<java.util.Map<String, Object>> processReconciliation(java.util.List<java.util.Map<String, Object>> reconOrders) {
         log.info("Processing reconciliation for {} orders", reconOrders != null ? reconOrders.size() : 0);
-        
         java.util.List<java.util.Map<String, Object>> onReconResponses = new java.util.ArrayList<>();
-        
         if (reconOrders == null) return onReconResponses;
-
         for (java.util.Map<String, Object> reconOrder : reconOrders) {
             try {
                 // Map to internal format
                 java.util.Map<String, Object> internalRecord = settlementMapper.mapReconOrderToInternal(reconOrder);
                 String orderId = (String) internalRecord.get("orderId");
-                
                 // Fetch our ledger record via Feign
                 BigDecimal expectedAmount = getLedgerAmount(orderId);
-                
                 // Compare amounts
                 Object amountObj = internalRecord.get("amount");
                 Map<String, Object> amountMap = null;
@@ -50,26 +41,20 @@ public class ReconciliationService {
                 } else if (amountObj != null) {
                     receivedAmount = new BigDecimal(String.valueOf(amountObj));
                 }
-
                 BigDecimal diff = expectedAmount.subtract(receivedAmount);
-                
                 // Log discrepancy if any
                 if (diff.compareTo(BigDecimal.ZERO) != 0) {
-                    log.warn("Discrepancy found for order {}: Expected {}, Received {}, Diff {}", 
-                             orderId, expectedAmount, receivedAmount, diff);
+                    log.warn("Discrepancy found for order {}: Expected {}, Received {}, Diff {}", orderId, expectedAmount, receivedAmount, diff);
                 }
-                
                 // Map to response format
                 onReconResponses.add(settlementMapper.mapInternalToReconResponse(internalRecord, diff));
-                
             } catch (Exception e) {
                 log.error("Failed to process reconciliation for order {}", reconOrder.get("id"), e);
             }
         }
-        
         return onReconResponses;
     }
-    
+
     private BigDecimal getLedgerAmount(String orderId) {
         try {
             BigDecimal amount = ledgerServiceClient.getOrderLedgerAmount(orderId);
@@ -80,5 +65,12 @@ public class ReconciliationService {
         } catch (Exception e) {
             throw new IllegalStateException("Failed to fetch ledger amount for order " + orderId + " from upstream service", e);
         }
+    }
+
+    @java.lang.SuppressWarnings("all")
+    public ReconciliationService(final SettlementService settlementService, final SettlementMapper settlementMapper, final LedgerServiceClient ledgerServiceClient) {
+        this.settlementService = settlementService;
+        this.settlementMapper = settlementMapper;
+        this.ledgerServiceClient = ledgerServiceClient;
     }
 }

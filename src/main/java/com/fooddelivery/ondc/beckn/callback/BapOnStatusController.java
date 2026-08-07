@@ -3,16 +3,18 @@ package com.fooddelivery.ondc.beckn.callback;
 import com.fooddelivery.ondc.dto.OndcAckResponse;
 import com.fooddelivery.ondc.dto.OndcRequest;
 import com.fooddelivery.ondc.util.OndcSchemaValidator;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-/** BAP /on_status callback — receives fulfillment state updates. */
-@RestController @Slf4j @RequiredArgsConstructor
+/**
+ * BAP /on_status callback — receives fulfillment state updates.
+ */
+@RestController
 public class BapOnStatusController {
+    @java.lang.SuppressWarnings("all")
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(BapOnStatusController.class);
     private final OndcSchemaValidator schemaValidator;
 
     @PostMapping("/on_status")
@@ -20,5 +22,10 @@ public class BapOnStatusController {
         log.info("Received /on_status, transaction_id: {}", request.getContext().getTransactionId());
         schemaValidator.validateRequest(request);
         return ResponseEntity.ok(OndcAckResponse.ack(request.getContext()));
+    }
+
+    @java.lang.SuppressWarnings("all")
+    public BapOnStatusController(final OndcSchemaValidator schemaValidator) {
+        this.schemaValidator = schemaValidator;
     }
 }

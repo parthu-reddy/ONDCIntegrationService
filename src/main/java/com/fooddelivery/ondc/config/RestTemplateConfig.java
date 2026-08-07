@@ -12,8 +12,8 @@ import org.springframework.web.client.RestTemplate;
 public class RestTemplateConfig {
 
     @Bean
-    public RestTemplate ondcRestTemplate(com.fooddelivery.ondc.auth.OndcRequestInterceptor interceptor) {
-        RestTemplate restTemplate = new RestTemplate();
+    public RestTemplate ondcRestTemplate(org.springframework.boot.web.client.RestTemplateBuilder builder, com.fooddelivery.ondc.auth.OndcRequestInterceptor interceptor) {
+        RestTemplate restTemplate = builder.build();
         restTemplate.getInterceptors().add(interceptor);
         return restTemplate;
     }

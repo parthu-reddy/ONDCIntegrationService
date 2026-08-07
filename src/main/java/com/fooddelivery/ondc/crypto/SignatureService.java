@@ -1,10 +1,7 @@
 package com.fooddelivery.ondc.crypto;
 
 import com.fooddelivery.ondc.config.OndcProperties;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-
 import java.time.Instant;
 
 /**
@@ -18,14 +15,12 @@ import java.time.Instant;
  * The signing string uses actual newline characters (\n), not escaped literals.
  */
 @Service
-@Slf4j
-@RequiredArgsConstructor
 public class SignatureService {
-
+    @java.lang.SuppressWarnings("all")
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(SignatureService.class);
     private final Ed25519KeyManager ed25519KeyManager;
     private final BlakeDigestService blakeDigestService;
     private final OndcProperties ondcProperties;
-
     private static final long DEFAULT_EXPIRY_SECONDS = 300; // 5 minutes
 
     /**
@@ -37,19 +32,11 @@ public class SignatureService {
     public String createAuthorizationHeader(byte[] rawBody) {
         long created = Instant.now().getEpochSecond();
         long expires = created + DEFAULT_EXPIRY_SECONDS;
-
         String digest = blakeDigestService.computeDigestHeader(rawBody);
         String signingString = buildSigningString(created, expires, digest);
         String signature = ed25519KeyManager.sign(signingString);
-
-        String keyId = ondcProperties.getSubscriberId() + "|" +
-                ondcProperties.getUniqueKeyId() + "|ed25519";
-
-        return String.format(
-                "Signature keyId=\"%s\",algorithm=\"ed25519\",created=\"%d\",expires=\"%d\"," +
-                        "headers=\"(created) (expires) digest\",signature=\"%s\"",
-                keyId, created, expires, signature
-        );
+        String keyId = ondcProperties.getSubscriberId() + "|" + ondcProperties.getUniqueKeyId() + "|ed25519";
+        return String.format("Signature keyId=\"%s\",algorithm=\"ed25519\",created=\"%d\",expires=\"%d\"," + "headers=\"(created) (expires) digest\",signature=\"%s\"", keyId, created, expires, signature);
     }
 
     /**
@@ -57,9 +44,7 @@ public class SignatureService {
      * CRITICAL: Uses actual newline characters, not "\\n" string literals.
      */
     public String buildSigningString(long created, long expires, String digest) {
-        return "(created): " + created + "\n" +
-                "(expires): " + expires + "\n" +
-                "digest: " + digest;
+        return "(created): " + created + "\n" + "(expires): " + expires + "\n" + "digest: " + digest;
     }
 
     /**
@@ -97,5 +82,12 @@ public class SignatureService {
         int start = authHeader.indexOf("expires=\"") + 9;
         int end = authHeader.indexOf("\"", start);
         return Long.parseLong(authHeader.substring(start, end));
+    }
+
+    @java.lang.SuppressWarnings("all")
+    public SignatureService(final Ed25519KeyManager ed25519KeyManager, final BlakeDigestService blakeDigestService, final OndcProperties ondcProperties) {
+        this.ed25519KeyManager = ed25519KeyManager;
+        this.blakeDigestService = blakeDigestService;
+        this.ondcProperties = ondcProperties;
     }
 }

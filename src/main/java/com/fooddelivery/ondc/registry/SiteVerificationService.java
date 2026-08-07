@@ -2,10 +2,7 @@ package com.fooddelivery.ondc.registry;
 
 import com.fooddelivery.ondc.config.OndcProperties;
 import com.fooddelivery.ondc.crypto.Ed25519KeyManager;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-
 import java.util.UUID;
 
 /**
@@ -14,13 +11,11 @@ import java.util.UUID;
  * to verify domain ownership during onboarding.
  */
 @Service
-@Slf4j
-@RequiredArgsConstructor
 public class SiteVerificationService {
-
+    @java.lang.SuppressWarnings("all")
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(SiteVerificationService.class);
     private final Ed25519KeyManager ed25519KeyManager;
     private final OndcProperties ondcProperties;
-
     private String cachedHtml;
 
     /**
@@ -35,17 +30,16 @@ public class SiteVerificationService {
                 verificationId = UUID.randomUUID().toString();
             }
             String signedRequestId = ed25519KeyManager.sign(verificationId);
-            
             cachedHtml = """
-                    <html>
-                    <head>
-                        <meta name="ondc-site-verification" content="%s" />
-                    </head>
-                    <body>
-                        ONDC Site Verification Page
-                    </body>
-                    </html>
-                    """.formatted(signedRequestId);
+                <html>
+                <head>
+                    <meta name=\"ondc-site-verification\" content=\"%s\" />
+                </head>
+                <body>
+                    ONDC Site Verification Page
+                </body>
+                </html>
+                """.formatted(signedRequestId);
         }
         return cachedHtml;
     }
@@ -59,5 +53,11 @@ public class SiteVerificationService {
             verificationId = UUID.randomUUID().toString();
         }
         return ed25519KeyManager.sign(verificationId);
+    }
+
+    @java.lang.SuppressWarnings("all")
+    public SiteVerificationService(final Ed25519KeyManager ed25519KeyManager, final OndcProperties ondcProperties) {
+        this.ed25519KeyManager = ed25519KeyManager;
+        this.ondcProperties = ondcProperties;
     }
 }

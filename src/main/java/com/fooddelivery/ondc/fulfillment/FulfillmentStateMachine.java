@@ -1,10 +1,7 @@
 package com.fooddelivery.ondc.fulfillment;
 
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
-
 import java.time.Duration;
 
 /**
@@ -12,13 +9,11 @@ import java.time.Duration;
  * Tracks current state per transaction in Redis and validates transitions.
  */
 @Service
-@Slf4j
-@RequiredArgsConstructor
 public class FulfillmentStateMachine {
-
+    @java.lang.SuppressWarnings("all")
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(FulfillmentStateMachine.class);
     private final ForbiddenStateGuard forbiddenStateGuard;
     private final StringRedisTemplate redisTemplate;
-
     private static final String REDIS_KEY_PREFIX = "ondc:fulfillment:state:";
     private static final Duration STATE_TTL = Duration.ofDays(7); // Keep state for 7 days
 
@@ -31,21 +26,15 @@ public class FulfillmentStateMachine {
      */
     public OndcFulfillmentState transition(String transactionId, OndcFulfillmentState newState) {
         OndcFulfillmentState currentState = getCurrentState(transactionId);
-
         // Skip if already at this state (idempotent)
         if (currentState == newState) {
             log.debug("Order {} already at state {}, skipping", transactionId, newState.getOndcValue());
             return currentState;
         }
-
         forbiddenStateGuard.validateTransition(currentState, newState);
-
         String redisKey = REDIS_KEY_PREFIX + transactionId;
         redisTemplate.opsForValue().set(redisKey, newState.name(), STATE_TTL);
-        
-        log.info("Order {} transitioned: {} → {}",
-                transactionId, currentState.getOndcValue(), newState.getOndcValue());
-
+        log.info("Order {} transitioned: {} → {}", transactionId, currentState.getOndcValue(), newState.getOndcValue());
         return newState;
     }
 
@@ -55,11 +44,9 @@ public class FulfillmentStateMachine {
     public OndcFulfillmentState getCurrentState(String transactionId) {
         String redisKey = REDIS_KEY_PREFIX + transactionId;
         String stateStr = redisTemplate.opsForValue().get(redisKey);
-        
         if (stateStr == null) {
             return OndcFulfillmentState.PENDING;
         }
-        
         try {
             return OndcFulfillmentState.valueOf(stateStr);
         } catch (IllegalArgumentException e) {
@@ -74,5 +61,11 @@ public class FulfillmentStateMachine {
     public void removeState(String transactionId) {
         String redisKey = REDIS_KEY_PREFIX + transactionId;
         redisTemplate.delete(redisKey);
+    }
+
+    @java.lang.SuppressWarnings("all")
+    public FulfillmentStateMachine(final ForbiddenStateGuard forbiddenStateGuard, final StringRedisTemplate redisTemplate) {
+        this.forbiddenStateGuard = forbiddenStateGuard;
+        this.redisTemplate = redisTemplate;
     }
 }

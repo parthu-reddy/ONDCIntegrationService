@@ -1,14 +1,12 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+<?xml version='1.0' encoding='utf-8'?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
         <version>3.3.0</version>
-        <relativePath/>
+        <relativePath />
     </parent>
 
     <groupId>com.fooddelivery</groupId>
@@ -21,7 +19,6 @@
 
     <properties>
         <java.version>17</java.version>
-        <lombok.version>1.18.38</lombok.version>
         <spring-cloud.version>2023.0.2</spring-cloud.version>
         <bouncycastle.version>1.78.1</bouncycastle.version>
         <testcontainers.version>1.19.7</testcontainers.version>
@@ -47,14 +44,14 @@
     </dependencyManagement>
 
     <dependencies>
-        <!-- Common Library -->
+        
         <dependency>
             <groupId>com.fooddelivery</groupId>
             <artifactId>common-library</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
 
-        <!-- Spring Boot Starters -->
+        
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
@@ -84,37 +81,37 @@
             <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
 
-        <!-- Spring Cloud Config -->
+        
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-config</artifactId>
         </dependency>
 
-        <!-- OpenFeign -->
+        
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-openfeign</artifactId>
         </dependency>
 
-        <!-- Eureka Client -->
+        
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
         </dependency>
 
-        <!-- Load Balancer -->
+        
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-loadbalancer</artifactId>
         </dependency>
 
-        <!-- Kafka -->
+        
         <dependency>
             <groupId>org.springframework.kafka</groupId>
             <artifactId>spring-kafka</artifactId>
         </dependency>
 
-        <!-- Database -->
+        
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
@@ -129,7 +126,7 @@
             <artifactId>flyway-database-postgresql</artifactId>
         </dependency>
 
-        <!-- Cryptography: BouncyCastle for Ed25519, X25519, BLAKE2b -->
+        
         <dependency>
             <groupId>org.bouncycastle</groupId>
             <artifactId>bcprov-jdk18on</artifactId>
@@ -141,14 +138,14 @@
             <version>${bouncycastle.version}</version>
         </dependency>
 
-        <!-- Resilience4j -->
+        
         <dependency>
             <groupId>io.github.resilience4j</groupId>
             <artifactId>resilience4j-spring-boot3</artifactId>
             <version>2.2.0</version>
         </dependency>
 
-        <!-- Observability -->
+        
         <dependency>
             <groupId>io.micrometer</groupId>
             <artifactId>micrometer-tracing-bridge-brave</artifactId>
@@ -158,15 +155,10 @@
             <artifactId>micrometer-registry-prometheus</artifactId>
         </dependency>
 
-        <!-- Boilerplate -->
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <version>${lombok.version}</version>
-            <optional>true</optional>
-        </dependency>
+        
+        
 
-        <!-- Testing -->
+        
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
@@ -208,7 +200,7 @@
             <artifactId>awaitility</artifactId>
             <scope>test</scope>
         </dependency>
-        <!-- Common Library Test Jar -->
+        
         <dependency>
             <groupId>com.fooddelivery</groupId>
             <artifactId>common-library</artifactId>
@@ -216,7 +208,9 @@
             <type>test-jar</type>
             <scope>test</scope>
         </dependency>
-    </dependencies>
+    <dependency><groupId>io.micrometer</groupId><artifactId>micrometer-tracing-bridge-otel</artifactId></dependency>
+        <dependency><groupId>io.opentelemetry</groupId><artifactId>opentelemetry-exporter-otlp</artifactId></dependency>
+        </dependencies>
 
     <build>
         <plugins>
@@ -241,13 +235,7 @@
                         <arg>-J--add-opens=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED</arg>
                         <arg>-J--add-opens=jdk.compiler/com.sun.tools.javac.jvm=ALL-UNNAMED</arg>
                     </compilerArgs>
-                    <annotationProcessorPaths>
-                        <path>
-                            <groupId>org.projectlombok</groupId>
-                            <artifactId>lombok</artifactId>
-                            <version>${lombok.version}</version>
-                        </path>
-                    </annotationProcessorPaths>
+                    
                 </configuration>
             </plugin>
             <plugin>
@@ -262,12 +250,7 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
                     <mainClass>com.fooddelivery.ondc.OndcIntegrationApplication</mainClass>
-                    <excludes>
-                        <exclude>
-                            <groupId>org.projectlombok</groupId>
-                            <artifactId>lombok</artifactId>
-                        </exclude>
-                    </excludes>
+                    
                 </configuration>
             </plugin>
         </plugins>

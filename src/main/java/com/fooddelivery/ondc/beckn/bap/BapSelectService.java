@@ -1,7 +1,5 @@
 package com.fooddelivery.ondc.beckn.bap;
 
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -9,12 +7,10 @@ import org.springframework.web.client.RestTemplate;
  * BAP Select Service — sends /select to a specific BPP with cart items.
  */
 @Service
-@Slf4j
-@RequiredArgsConstructor
 public class BapSelectService {
-
+    @java.lang.SuppressWarnings("all")
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(BapSelectService.class);
     private final RestTemplate ondcRestTemplate;
-
     private final com.fooddelivery.ondc.util.OndcContextBuilder contextBuilder;
 
     public void select(String bppUri, String transactionId, Object selectDetails) {
@@ -27,5 +23,11 @@ public class BapSelectService {
         ondcMsg.setOrder(selectDetails);
         request.setMessage(ondcMsg);
         ondcRestTemplate.postForEntity(bppUri + "/select", request, String.class);
+    }
+
+    @java.lang.SuppressWarnings("all")
+    public BapSelectService(final RestTemplate ondcRestTemplate, final com.fooddelivery.ondc.util.OndcContextBuilder contextBuilder) {
+        this.ondcRestTemplate = ondcRestTemplate;
+        this.contextBuilder = contextBuilder;
     }
 }

@@ -1,6 +1,5 @@
 package com.fooddelivery.ondc.fulfillment;
 
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 /**
@@ -9,8 +8,9 @@ import org.springframework.stereotype.Component;
  * enums and the ONDC:RET11 fulfillment states.
  */
 @Component
-@Slf4j
 public class OndcFulfillmentMapper {
+    @java.lang.SuppressWarnings("all")
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(OndcFulfillmentMapper.class);
 
     /**
      * Maps internal order status string to ONDC fulfillment state.
@@ -20,7 +20,6 @@ public class OndcFulfillmentMapper {
         if (internalStatus == null) {
             throw new IllegalArgumentException("Internal status cannot be null");
         }
-
         return switch (internalStatus.toUpperCase()) {
             case "PLACED", "RECEIVED", "ACCEPTED", "PENDING" -> OndcFulfillmentState.PENDING;
             case "PREPARING", "PREPARED", "PACKED", "READY_FOR_PICKUP" -> OndcFulfillmentState.PACKED;
@@ -32,7 +31,7 @@ public class OndcFulfillmentMapper {
             case "DELIVERED", "ORDER_DELIVERED" -> OndcFulfillmentState.ORDER_DELIVERED;
             case "CANCELLED", "ORDER_CANCELLED", "ORDER_CANCELLED_BY_ADMIN" -> OndcFulfillmentState.CANCELLED;
             default -> {
-                throw new IllegalArgumentException("Unknown internal status: '" + internalStatus + "'. Cannot safely map to ONDC state.");
+                throw new IllegalArgumentException("Unknown internal status: \'" + internalStatus + "\'. Cannot safely map to ONDC state.");
             }
         };
     }

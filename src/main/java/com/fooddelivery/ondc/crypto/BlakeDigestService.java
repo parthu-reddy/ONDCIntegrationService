@@ -1,9 +1,7 @@
 package com.fooddelivery.ondc.crypto;
 
-import lombok.extern.slf4j.Slf4j;
 import org.bouncycastle.crypto.digests.Blake2bDigest;
 import org.springframework.stereotype.Service;
-
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
@@ -12,9 +10,9 @@ import java.util.Base64;
  * ONDC mandates BLAKE-512 — SHA digests are categorically rejected.
  */
 @Service
-@Slf4j
 public class BlakeDigestService {
-
+    @java.lang.SuppressWarnings("all")
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(BlakeDigestService.class);
     private static final int BLAKE2B_512_DIGEST_SIZE = 64; // 512 bits = 64 bytes
 
     /**
@@ -28,12 +26,10 @@ public class BlakeDigestService {
             // ONDC spec: empty body → hash of empty byte array, not null
             body = new byte[0];
         }
-
         Blake2bDigest digest = new Blake2bDigest(BLAKE2B_512_DIGEST_SIZE * 8);
         digest.update(body, 0, body.length);
         byte[] hash = new byte[BLAKE2B_512_DIGEST_SIZE];
         digest.doFinal(hash, 0);
-
         return Base64.getEncoder().encodeToString(hash);
     }
 

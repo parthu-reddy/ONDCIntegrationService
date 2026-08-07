@@ -1,14 +1,14 @@
 package com.fooddelivery.ondc.catalog;
 
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 /**
  * Maps internal cuisine categories to ONDC:RET11 taxonomy codes.
  */
 @Service
-@Slf4j
 public class TaxonomyMappingService {
+    @java.lang.SuppressWarnings("all")
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(TaxonomyMappingService.class);
 
     /**
      * Maps an internal cuisine or category string to the ONDC:RET11 taxonomy code.
@@ -17,7 +17,6 @@ public class TaxonomyMappingService {
         if (internalCategory == null) {
             throw new IllegalArgumentException("Internal category cannot be null");
         }
-        
         return switch (internalCategory.toUpperCase()) {
             case "GROCERY" -> "Grocery";
             case "FRUITS", "VEGETABLES" -> "F&V";
@@ -26,7 +25,8 @@ public class TaxonomyMappingService {
             case "BAKERY", "CAKE", "DESSERT" -> "Bakes & Desserts";
             case "MEAT", "POULTRY", "SEAFOOD" -> "Meat & Seafood";
             case "STREET FOOD", "CHAAT" -> "Street Food";
-            default -> "F&B"; // Fallback to generic Food & Beverage
+            default -> "F&B";
+            // Fallback to generic Food & Beverage
         };
     }
 }

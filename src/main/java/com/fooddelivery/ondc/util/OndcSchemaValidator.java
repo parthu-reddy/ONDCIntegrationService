@@ -2,15 +2,15 @@ package com.fooddelivery.ondc.util;
 
 import com.fooddelivery.ondc.dto.OndcContext;
 import com.fooddelivery.ondc.dto.OndcRequest;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 /**
  * Validates incoming ONDC request payloads against mandatory schema fields.
  */
 @Component
-@Slf4j
 public class OndcSchemaValidator {
+    @java.lang.SuppressWarnings("all")
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(OndcSchemaValidator.class);
 
     /**
      * Validates that the request contains all mandatory context fields.
@@ -25,7 +25,6 @@ public class OndcSchemaValidator {
         if (request.getContext() == null) {
             throw new IllegalArgumentException("ONDC context is missing");
         }
-
         OndcContext ctx = request.getContext();
         requireNonBlank(ctx.getDomain(), "context.domain");
         requireNonBlank(ctx.getAction(), "context.action");

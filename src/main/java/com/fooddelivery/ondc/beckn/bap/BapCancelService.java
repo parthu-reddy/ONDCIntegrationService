@@ -1,14 +1,12 @@
 package com.fooddelivery.ondc.beckn.bap;
 
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 @Service
-@Slf4j
-@RequiredArgsConstructor
 public class BapCancelService {
+    @java.lang.SuppressWarnings("all")
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(BapCancelService.class);
     private final RestTemplate ondcRestTemplate;
     private final com.fooddelivery.ondc.util.OndcContextBuilder contextBuilder;
 
@@ -22,5 +20,11 @@ public class BapCancelService {
         ondcMsg.setOrder(java.util.Map.of("id", orderId, "cancellation", java.util.Map.of("reason", java.util.Map.of("id", cancellationReasonId))));
         request.setMessage(ondcMsg);
         ondcRestTemplate.postForEntity(bppUri + "/cancel", request, String.class);
+    }
+
+    @java.lang.SuppressWarnings("all")
+    public BapCancelService(final RestTemplate ondcRestTemplate, final com.fooddelivery.ondc.util.OndcContextBuilder contextBuilder) {
+        this.ondcRestTemplate = ondcRestTemplate;
+        this.contextBuilder = contextBuilder;
     }
 }

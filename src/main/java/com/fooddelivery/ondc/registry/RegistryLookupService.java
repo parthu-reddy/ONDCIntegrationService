@@ -3,12 +3,9 @@ package com.fooddelivery.ondc.registry;
 import com.fooddelivery.ondc.config.OndcProperties;
 import com.fooddelivery.ondc.exception.OndcRegistryException;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -17,14 +14,12 @@ import java.util.concurrent.TimeUnit;
  * public keys. Caches results in Redis with configurable TTL.
  */
 @Service
-@Slf4j
-@RequiredArgsConstructor
 public class RegistryLookupService {
-
+    @java.lang.SuppressWarnings("all")
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(RegistryLookupService.class);
     private final OndcProperties ondcProperties;
     private final RestTemplate ondcRestTemplate;
     private final RedisTemplate<String, Object> ondcRedisTemplate;
-
     private static final String CACHE_KEY_PREFIX = "ondc:registry:";
 
     /**
@@ -45,43 +40,29 @@ public class RegistryLookupService {
             log.debug("Registry cache hit for subscriber: {}", subscriberId);
             return cachedKey;
         }
-
         // 2. Query ONDC registry
         log.info("Registry cache miss. Querying ONDC registry for subscriber: {}", subscriberId);
         String registryUrl = ondcProperties.getRegistry().getUrl() + "/v2.0/lookup";
-
-        Map<String, String> requestBody = Map.of(
-                "subscriber_id", subscriberId,
-                "ukId", uniqueKeyId
-        );
-
+        Map<String, String> requestBody = Map.of("subscriber_id", subscriberId, "ukId", uniqueKeyId);
         try {
             @SuppressWarnings("unchecked")
-            Map<String, Object>[] response = ondcRestTemplate.postForObject(
-                    registryUrl, requestBody, Map[].class);
-
+            Map<String, Object>[] response = ondcRestTemplate.postForObject(registryUrl, requestBody, Map[].class);
             if (response == null || response.length == 0) {
-                throw new OndcRegistryException(
-                        "No registry entry found for subscriber: " + subscriberId);
+                throw new OndcRegistryException("No registry entry found for subscriber: " + subscriberId);
             }
-
             String signingPublicKey = (String) response[0].get("signing_public_key");
             if (signingPublicKey == null || signingPublicKey.isBlank()) {
-                throw new OndcRegistryException(
-                        "signing_public_key missing in registry response for: " + subscriberId);
+                throw new OndcRegistryException("signing_public_key missing in registry response for: " + subscriberId);
             }
-
             // 3. Cache in Redis
             int ttl = ondcProperties.getRegistry().getLookupCacheTtlSeconds();
             ondcRedisTemplate.opsForValue().set(cacheKey, signingPublicKey, ttl, TimeUnit.SECONDS);
             log.info("Cached registry entry for subscriber: {} (TTL: {}s)", subscriberId, ttl);
-
             return signingPublicKey;
         } catch (OndcRegistryException e) {
             throw e;
         } catch (Exception e) {
-            throw new OndcRegistryException(
-                    "Failed to query ONDC registry for subscriber: " + subscriberId, e);
+            throw new OndcRegistryException("Failed to query ONDC registry for subscriber: " + subscriberId, e);
         }
     }
 
@@ -93,13 +74,17 @@ public class RegistryLookupService {
         log.warn("Registry circuit breaker open. Attempting cache fallback for: {}", subscriberId);
         String cacheKey = CACHE_KEY_PREFIX + subscriberId + ":" + uniqueKeyId;
         String cachedKey = (String) ondcRedisTemplate.opsForValue().get(cacheKey);
-
         if (cachedKey != null) {
             log.info("Cache fallback successful for subscriber: {}", subscriberId);
             return cachedKey;
         }
+        throw new OndcRegistryException("Registry unavailable and no cached key for subscriber: " + subscriberId, t);
+    }
 
-        throw new OndcRegistryException(
-                "Registry unavailable and no cached key for subscriber: " + subscriberId, t);
+    @java.lang.SuppressWarnings("all")
+    public RegistryLookupService(final OndcProperties ondcProperties, final RestTemplate ondcRestTemplate, final RedisTemplate<String, Object> ondcRedisTemplate) {
+        this.ondcProperties = ondcProperties;
+        this.ondcRestTemplate = ondcRestTemplate;
+        this.ondcRedisTemplate = ondcRedisTemplate;
     }
 }

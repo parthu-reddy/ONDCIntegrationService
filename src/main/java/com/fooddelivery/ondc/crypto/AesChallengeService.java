@@ -1,8 +1,6 @@
 package com.fooddelivery.ondc.crypto;
 
 import com.fooddelivery.ondc.config.OndcProperties;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 /**
@@ -10,10 +8,9 @@ import org.springframework.stereotype.Service;
  * during the /on_subscribe callback.
  */
 @Service
-@Slf4j
-@RequiredArgsConstructor
 public class AesChallengeService {
-
+    @java.lang.SuppressWarnings("all")
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(AesChallengeService.class);
     private final X25519KeyManager x25519KeyManager;
     private final OndcProperties ondcProperties;
 
@@ -26,11 +23,15 @@ public class AesChallengeService {
      */
     public String decryptSubscriptionChallenge(String encryptedChallenge) {
         String ondcPublicKey = ondcProperties.getCrypto().getOndcProductionPublicKey();
-
         log.info("Decrypting ONDC subscription challenge...");
         String decrypted = x25519KeyManager.decryptChallenge(encryptedChallenge, ondcPublicKey);
         log.info("ONDC subscription challenge decrypted successfully");
-
         return decrypted;
+    }
+
+    @java.lang.SuppressWarnings("all")
+    public AesChallengeService(final X25519KeyManager x25519KeyManager, final OndcProperties ondcProperties) {
+        this.x25519KeyManager = x25519KeyManager;
+        this.ondcProperties = ondcProperties;
     }
 }

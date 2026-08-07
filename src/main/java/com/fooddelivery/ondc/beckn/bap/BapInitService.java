@@ -1,7 +1,5 @@
 package com.fooddelivery.ondc.beckn.bap;
 
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -9,12 +7,10 @@ import org.springframework.web.client.RestTemplate;
  * BAP Init Service — sends /init to BPP with billing and delivery details.
  */
 @Service
-@Slf4j
-@RequiredArgsConstructor
 public class BapInitService {
-
+    @java.lang.SuppressWarnings("all")
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(BapInitService.class);
     private final RestTemplate ondcRestTemplate;
-
     private final com.fooddelivery.ondc.util.OndcContextBuilder contextBuilder;
 
     public void init(String bppUri, String transactionId, Object initDetails) {
@@ -27,5 +23,11 @@ public class BapInitService {
         ondcMsg.setOrder(initDetails);
         request.setMessage(ondcMsg);
         ondcRestTemplate.postForEntity(bppUri + "/init", request, String.class);
+    }
+
+    @java.lang.SuppressWarnings("all")
+    public BapInitService(final RestTemplate ondcRestTemplate, final com.fooddelivery.ondc.util.OndcContextBuilder contextBuilder) {
+        this.ondcRestTemplate = ondcRestTemplate;
+        this.contextBuilder = contextBuilder;
     }
 }

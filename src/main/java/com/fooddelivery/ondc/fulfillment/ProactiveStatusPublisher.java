@@ -5,13 +5,9 @@ import com.fooddelivery.ondc.beckn.bpp.BppCallbackService;
 import com.fooddelivery.ondc.dto.OndcContext;
 import com.fooddelivery.ondc.entity.OndcTransaction;
 import com.fooddelivery.ondc.repository.OndcTransactionRepository;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
-
 import java.util.Map;
-
 import static com.fooddelivery.ondc.config.OndcKafkaConfig.TOPIC_ONDC_ORDER_STATUS_CHANGED;
 
 /**
@@ -21,10 +17,9 @@ import static com.fooddelivery.ondc.config.OndcKafkaConfig.TOPIC_ONDC_ORDER_STAT
  * This enables proactive status updates (not just on BAP polling).
  */
 @Service
-@Slf4j
-@RequiredArgsConstructor
 public class ProactiveStatusPublisher {
-
+    @java.lang.SuppressWarnings("all")
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(ProactiveStatusPublisher.class);
     private final FulfillmentStateMachine stateMachine;
     private final OndcFulfillmentMapper fulfillmentMapper;
     private final ObjectMapper objectMapper;
@@ -35,41 +30,39 @@ public class ProactiveStatusPublisher {
     public void handleStatusChange(String event) {
         log.info("Received order status change event: {}", event);
         try {
-            java.util.Map<String, Object> eventData = objectMapper.readValue(event, new com.fasterxml.jackson.core.type.TypeReference<>() {});
-            
+            java.util.Map<String, Object> eventData = objectMapper.readValue(event, new com.fasterxml.jackson.core.type.TypeReference<>() {
+            });
             String transactionId = (String) eventData.get("transactionId");
             String internalStatus = (String) eventData.get("status");
             if (transactionId == null || internalStatus == null) return;
-            
             // Map internal status to ONDC fulfillment state
             OndcFulfillmentState newState = fulfillmentMapper.mapFromInternalStatus(internalStatus);
             stateMachine.transition(transactionId, newState);
-            
             // Retrieve transaction to get BAP details
-            OndcTransaction txn = transactionRepository.findTopByTransactionIdOrderByCreatedAtDesc(transactionId)
-                .orElseThrow(() -> new IllegalStateException("Transaction not found for id: " + transactionId));
-            
+            OndcTransaction txn = transactionRepository.findTopByTransactionIdOrderByCreatedAtDesc(transactionId).orElseThrow(() -> new IllegalStateException("Transaction not found for id: " + transactionId));
             // Reconstruct context
             OndcContext context = new OndcContext();
             context.setTransactionId(transactionId);
             context.setBapId(txn.getBapId());
             // In full implementation, bapUri is stored in DB. We use a proxy here or fallback.
             // Assuming bapId acts as URI for simplified purposes or fetch from registry
-            context.setBapUri(txn.getBapId()); 
+            context.setBapUri(txn.getBapId());
             context.setBppId(txn.getBppId());
-
             // Send on_status
-            Map<String, Object> onStatusPayload = Map.of(
-                    "fulfillment", Map.of(
-                            "state", Map.of("descriptor", Map.of("code", newState.getOndcValue()))
-                    )
-            );
-            
+            Map<String, Object> onStatusPayload = Map.of("fulfillment", Map.of("state", Map.of("descriptor", Map.of("code", newState.getOndcValue()))));
             callbackService.sendCallbackWithRetry("on_status", context, onStatusPayload);
-            
             log.info("Transitioned and pushed ONDC transaction {} to {}", transactionId, newState);
         } catch (Exception e) {
             log.error("Failed to process status change event", e);
         }
+    }
+
+    @java.lang.SuppressWarnings("all")
+    public ProactiveStatusPublisher(final FulfillmentStateMachine stateMachine, final OndcFulfillmentMapper fulfillmentMapper, final ObjectMapper objectMapper, final OndcTransactionRepository transactionRepository, final BppCallbackService callbackService) {
+        this.stateMachine = stateMachine;
+        this.fulfillmentMapper = fulfillmentMapper;
+        this.objectMapper = objectMapper;
+        this.transactionRepository = transactionRepository;
+        this.callbackService = callbackService;
     }
 }
