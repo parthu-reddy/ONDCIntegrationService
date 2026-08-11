@@ -12,7 +12,7 @@ import java.util.Map;
  * Feign client for DeliveryExecutiveApplication (Eureka: delivery-service).
  * Used to assign delivery, fetch driver location, and query delivery status.
  */
-@FeignClient(name = "delivery-service")
+@FeignClient(name = "delivery-service", fallback = DeliveryServiceClientFallback.class)
 public interface DeliveryServiceClient {
 
     @PostMapping("/api/v1/delivery/assign-from-ondc")

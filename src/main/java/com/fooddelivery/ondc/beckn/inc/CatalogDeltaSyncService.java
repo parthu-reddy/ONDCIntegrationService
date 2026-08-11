@@ -7,6 +7,12 @@ import com.fooddelivery.ondc.dto.OndcMessage;
 import com.fooddelivery.ondc.dto.OndcRequest;
 import com.fooddelivery.ondc.util.OndcContextBuilder;
 import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.annotation.RetryableTopic;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.kafka.annotation.DltHandler;
+import org.springframework.kafka.support.KafkaHeaders;
+import org.springframework.messaging.handler.annotation.Header;
+import org.springframework.kafka.retrytopic.DltStrategy;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import java.util.Map;
@@ -25,6 +31,7 @@ public class CatalogDeltaSyncService {
     private final RestTemplate ondcRestTemplate;
     private final ObjectMapper objectMapper;
 
+    @RetryableTopic(attempts = "5", backoff = @Backoff(delay = 1000, multiplier = 2.0), autoCreateTopics = "true", dltStrategy = DltStrategy.FAIL_ON_ERROR)
     @KafkaListener(topics = TOPIC_ONDC_CATALOG_DELTA, groupId = "ondc-catalog-delta-group")
     public void handleCatalogDelta(String deltaEvent) {
         log.info("Received catalog delta event: {}", deltaEvent);
@@ -56,5 +63,10 @@ public class CatalogDeltaSyncService {
         this.ondcProperties = ondcProperties;
         this.ondcRestTemplate = ondcRestTemplate;
         this.objectMapper = objectMapper;
+    }
+
+    @DltHandler
+    public void handleDlt(Object message, @Header(KafkaHeaders.RECEIVED_TOPIC) String topic) {
+        System.err.println("Message failed 5 times and sent to DLT: " + topic + " - " + message);
     }
 }

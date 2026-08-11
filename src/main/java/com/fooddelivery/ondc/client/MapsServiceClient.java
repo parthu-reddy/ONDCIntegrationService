@@ -13,7 +13,7 @@ import java.util.Map;
  * CRITICAL: If distance call fails, throw IllegalArgumentException.
  * No default distance values (per financial integrity rules).
  */
-@FeignClient(name = "mapsintegration")
+@FeignClient(name = "mapsintegration", fallback = MapsServiceClientFallback.class)
 public interface MapsServiceClient {
 
     @GetMapping("/api/logistics/distance")

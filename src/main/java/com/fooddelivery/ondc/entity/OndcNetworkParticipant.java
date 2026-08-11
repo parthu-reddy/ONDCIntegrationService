@@ -4,7 +4,7 @@ import com.fooddelivery.ondc.registry.SubscriptionStatus;
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
-import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 /**
@@ -20,9 +20,9 @@ public class OndcNetworkParticipant {
     private String subscriberId;
     @Column(name = "unique_key_id", nullable = false)
     private String uniqueKeyId;
-    @Column(name = "signing_public_key", nullable = false, length = 500)
+    @Column(name = "signing_public_key", nullable = false, length = 1024)
     private String signingPublicKey;
-    @Column(name = "encryption_public_key", nullable = false, length = 500)
+    @Column(name = "encryption_public_key", nullable = false, length = 1024)
     private String encryptionPublicKey;
     @Column(name = "subscriber_url", nullable = false)
     private String subscriberUrl;
@@ -39,10 +39,10 @@ public class OndcNetworkParticipant {
     private String country;
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
-    private Instant createdAt;
+    private LocalDateTime createdAt;
     @UpdateTimestamp
     @Column(name = "updated_at")
-    private Instant updatedAt;
+    private LocalDateTime updatedAt;
     @Version
     private Long version;
 
@@ -72,9 +72,9 @@ public class OndcNetworkParticipant {
         @java.lang.SuppressWarnings("all")
         private String country;
         @java.lang.SuppressWarnings("all")
-        private Instant createdAt;
+        private LocalDateTime createdAt;
         @java.lang.SuppressWarnings("all")
-        private Instant updatedAt;
+        private LocalDateTime updatedAt;
         @java.lang.SuppressWarnings("all")
         private Long version;
 
@@ -185,7 +185,7 @@ public class OndcNetworkParticipant {
          * @return {@code this}.
          */
         @java.lang.SuppressWarnings("all")
-        public OndcNetworkParticipant.OndcNetworkParticipantBuilder createdAt(final Instant createdAt) {
+        public OndcNetworkParticipant.OndcNetworkParticipantBuilder createdAt(final LocalDateTime createdAt) {
             this.createdAt = createdAt;
             return this;
         }
@@ -194,7 +194,7 @@ public class OndcNetworkParticipant {
          * @return {@code this}.
          */
         @java.lang.SuppressWarnings("all")
-        public OndcNetworkParticipant.OndcNetworkParticipantBuilder updatedAt(final Instant updatedAt) {
+        public OndcNetworkParticipant.OndcNetworkParticipantBuilder updatedAt(final LocalDateTime updatedAt) {
             this.updatedAt = updatedAt;
             return this;
         }
@@ -281,12 +281,12 @@ public class OndcNetworkParticipant {
     }
 
     @java.lang.SuppressWarnings("all")
-    public Instant getCreatedAt() {
+    public LocalDateTime getCreatedAt() {
         return this.createdAt;
     }
 
     @java.lang.SuppressWarnings("all")
-    public Instant getUpdatedAt() {
+    public LocalDateTime getUpdatedAt() {
         return this.updatedAt;
     }
 
@@ -351,12 +351,12 @@ public class OndcNetworkParticipant {
     }
 
     @java.lang.SuppressWarnings("all")
-    public void setCreatedAt(final Instant createdAt) {
+    public void setCreatedAt(final LocalDateTime createdAt) {
         this.createdAt = createdAt;
     }
 
     @java.lang.SuppressWarnings("all")
-    public void setUpdatedAt(final Instant updatedAt) {
+    public void setUpdatedAt(final LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
     }
 
@@ -370,7 +370,7 @@ public class OndcNetworkParticipant {
     }
 
     @java.lang.SuppressWarnings("all")
-    public OndcNetworkParticipant(final UUID id, final String subscriberId, final String uniqueKeyId, final String signingPublicKey, final String encryptionPublicKey, final String subscriberUrl, final Integer opsNo, final SubscriptionStatus status, final String domain, final String city, final String country, final Instant createdAt, final Instant updatedAt, final Long version) {
+    public OndcNetworkParticipant(final UUID id, final String subscriberId, final String uniqueKeyId, final String signingPublicKey, final String encryptionPublicKey, final String subscriberUrl, final Integer opsNo, final SubscriptionStatus status, final String domain, final String city, final String country, final LocalDateTime createdAt, final LocalDateTime updatedAt, final Long version) {
         this.id = id;
         this.subscriberId = subscriberId;
         this.uniqueKeyId = uniqueKeyId;

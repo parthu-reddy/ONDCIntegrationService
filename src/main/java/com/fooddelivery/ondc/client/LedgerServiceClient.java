@@ -16,7 +16,7 @@ import java.util.Map;
  * CRITICAL: All ledger entries must be idempotent. The LedgerService
  * uses unique constraints on transaction_id + direction to prevent duplicates.
  */
-@FeignClient(name = "ledger-service")
+@FeignClient(name = "ledger-service", fallback = LedgerServiceClientFallback.class)
 public interface LedgerServiceClient {
 
     @PostMapping("/api/v1/ledger/entries")

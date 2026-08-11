@@ -3,6 +3,12 @@ package com.fooddelivery.ondc.processor;
 import com.fooddelivery.ondc.beckn.bap.BapConfirmService;
 import com.fooddelivery.ondc.config.OndcKafkaConfig;
 import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.annotation.RetryableTopic;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.kafka.annotation.DltHandler;
+import org.springframework.kafka.support.KafkaHeaders;
+import org.springframework.messaging.handler.annotation.Header;
+import org.springframework.kafka.retrytopic.DltStrategy;
 import org.springframework.stereotype.Service;
 import java.util.Map;
 
@@ -16,6 +22,7 @@ public class ConfirmEventProcessor {
     private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(ConfirmEventProcessor.class);
     private final BapConfirmService bapConfirmService;
 
+    @RetryableTopic(attempts = "5", backoff = @Backoff(delay = 1000, multiplier = 2.0), autoCreateTopics = "true", dltStrategy = DltStrategy.FAIL_ON_ERROR)
     @KafkaListener(topics = OndcKafkaConfig.TOPIC_ONDC_ORDER_CREATED, groupId = "ondc-integration-group")
     public void handleOrderCreated(String eventJson) {
         log.info("Received internal order created event: {}", eventJson);
@@ -39,5 +46,10 @@ public class ConfirmEventProcessor {
     @java.lang.SuppressWarnings("all")
     public ConfirmEventProcessor(final BapConfirmService bapConfirmService) {
         this.bapConfirmService = bapConfirmService;
+    }
+
+    @DltHandler
+    public void handleDlt(Object message, @Header(KafkaHeaders.RECEIVED_TOPIC) String topic) {
+        System.err.println("Message failed 5 times and sent to DLT: " + topic + " - " + message);
     }
 }

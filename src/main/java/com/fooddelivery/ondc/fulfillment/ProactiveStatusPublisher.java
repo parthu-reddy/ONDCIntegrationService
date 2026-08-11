@@ -6,6 +6,12 @@ import com.fooddelivery.ondc.dto.OndcContext;
 import com.fooddelivery.ondc.entity.OndcTransaction;
 import com.fooddelivery.ondc.repository.OndcTransactionRepository;
 import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.annotation.RetryableTopic;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.kafka.annotation.DltHandler;
+import org.springframework.kafka.support.KafkaHeaders;
+import org.springframework.messaging.handler.annotation.Header;
+import org.springframework.kafka.retrytopic.DltStrategy;
 import org.springframework.stereotype.Service;
 import java.util.Map;
 import static com.fooddelivery.ondc.config.OndcKafkaConfig.TOPIC_ONDC_ORDER_STATUS_CHANGED;
@@ -26,6 +32,7 @@ public class ProactiveStatusPublisher {
     private final OndcTransactionRepository transactionRepository;
     private final BppCallbackService callbackService;
 
+    @RetryableTopic(attempts = "5", backoff = @Backoff(delay = 1000, multiplier = 2.0), autoCreateTopics = "true", dltStrategy = DltStrategy.FAIL_ON_ERROR)
     @KafkaListener(topics = TOPIC_ONDC_ORDER_STATUS_CHANGED, groupId = "ondc-status-group")
     public void handleStatusChange(String event) {
         log.info("Received order status change event: {}", event);
@@ -64,5 +71,10 @@ public class ProactiveStatusPublisher {
         this.objectMapper = objectMapper;
         this.transactionRepository = transactionRepository;
         this.callbackService = callbackService;
+    }
+
+    @DltHandler
+    public void handleDlt(Object message, @Header(KafkaHeaders.RECEIVED_TOPIC) String topic) {
+        System.err.println("Message failed 5 times and sent to DLT: " + topic + " - " + message);
     }
 }

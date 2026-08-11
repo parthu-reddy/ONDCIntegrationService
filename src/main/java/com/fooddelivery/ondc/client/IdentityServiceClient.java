@@ -10,7 +10,7 @@ import java.util.Map;
  * Feign client for IdentityService (Eureka: identity-service).
  * Used for user identity resolution during ONDC order processing.
  */
-@FeignClient(name = "identity-service")
+@FeignClient(name = "identity-service", fallback = IdentityServiceClientFallback.class)
 public interface IdentityServiceClient {
 
     @GetMapping("/api/v1/internal/users/{userId}")

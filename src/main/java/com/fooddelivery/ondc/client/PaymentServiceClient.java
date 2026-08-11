@@ -13,7 +13,7 @@ import java.util.Map;
  * CRITICAL: No default values — if payment processing fails,
  * the caller MUST throw IllegalStateException per financial integrity rules.
  */
-@FeignClient(name = "payment-service")
+@FeignClient(name = "payment-service", fallback = PaymentServiceClientFallback.class)
 public interface PaymentServiceClient {
 
     @GetMapping("/api/v1/payments/status")

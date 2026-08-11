@@ -12,7 +12,7 @@ import java.util.Map;
  * Feign client for RestaurantApplication (Eureka: restaurant-service).
  * Used to fetch outlet info, menus, and catalogs for ONDC syndication.
  */
-@FeignClient(name = "restaurant-service")
+@FeignClient(name = "restaurant-service", fallback = RestaurantServiceClientFallback.class)
 public interface RestaurantServiceClient {
 
     @GetMapping("/api/v1/restaurants/nearby")

@@ -12,9 +12,9 @@ import org.springframework.web.client.RestTemplate;
 public class RestTemplateConfig {
 
     @Bean
-    public RestTemplate ondcRestTemplate(org.springframework.boot.web.client.RestTemplateBuilder builder, com.fooddelivery.ondc.auth.OndcRequestInterceptor interceptor) {
+    public RestTemplate ondcRestTemplate(org.springframework.boot.web.client.RestTemplateBuilder builder, com.fooddelivery.ondc.crypto.SignatureService signatureService) {
         RestTemplate restTemplate = builder.build();
-        restTemplate.getInterceptors().add(interceptor);
+        restTemplate.getInterceptors().add(new com.fooddelivery.ondc.auth.OndcRequestInterceptor(signatureService));
         return restTemplate;
     }
 }

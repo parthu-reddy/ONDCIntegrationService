@@ -15,6 +15,9 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
         "com.fooddelivery.ondc",
         "com.fooddelivery.common"
 })
+@org.springframework.data.jpa.repository.config.EnableJpaRepositories(basePackages = {"com.fooddelivery.ondc", "com.fooddelivery.common"})
+@org.springframework.boot.autoconfigure.domain.EntityScan(basePackages = {"com.fooddelivery.ondc", "com.fooddelivery.common"})
+@com.fooddelivery.common.outbox.config.EnableOutbox
 @EnableDiscoveryClient
 
 @EnableAsync

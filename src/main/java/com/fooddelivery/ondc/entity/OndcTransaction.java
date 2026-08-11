@@ -2,7 +2,7 @@ package com.fooddelivery.ondc.entity;
 
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
-import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 /**
@@ -39,7 +39,7 @@ public class OndcTransaction {
     private UUID internalOrderId;
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
-    private Instant createdAt;
+    private LocalDateTime createdAt;
     @Version
     private Long version;
 
@@ -71,7 +71,7 @@ public class OndcTransaction {
         @java.lang.SuppressWarnings("all")
         private UUID internalOrderId;
         @java.lang.SuppressWarnings("all")
-        private Instant createdAt;
+        private LocalDateTime createdAt;
         @java.lang.SuppressWarnings("all")
         private Long version;
 
@@ -191,7 +191,7 @@ public class OndcTransaction {
          * @return {@code this}.
          */
         @java.lang.SuppressWarnings("all")
-        public OndcTransaction.OndcTransactionBuilder createdAt(final Instant createdAt) {
+        public OndcTransaction.OndcTransactionBuilder createdAt(final LocalDateTime createdAt) {
             this.createdAt = createdAt;
             return this;
         }
@@ -283,7 +283,7 @@ public class OndcTransaction {
     }
 
     @java.lang.SuppressWarnings("all")
-    public Instant getCreatedAt() {
+    public LocalDateTime getCreatedAt() {
         return this.createdAt;
     }
 
@@ -353,7 +353,7 @@ public class OndcTransaction {
     }
 
     @java.lang.SuppressWarnings("all")
-    public void setCreatedAt(final Instant createdAt) {
+    public void setCreatedAt(final LocalDateTime createdAt) {
         this.createdAt = createdAt;
     }
 
@@ -367,7 +367,7 @@ public class OndcTransaction {
     }
 
     @java.lang.SuppressWarnings("all")
-    public OndcTransaction(final UUID id, final String transactionId, final String messageId, final String action, final String flowId, final String bapId, final String bppId, final String state, final String requestPayload, final String responsePayload, final String errorMessage, final UUID internalOrderId, final Instant createdAt, final Long version) {
+    public OndcTransaction(final UUID id, final String transactionId, final String messageId, final String action, final String flowId, final String bapId, final String bppId, final String state, final String requestPayload, final String responsePayload, final String errorMessage, final UUID internalOrderId, final LocalDateTime createdAt, final Long version) {
         this.id = id;
         this.transactionId = transactionId;
         this.messageId = messageId;
