@@ -3,7 +3,7 @@ package com.fooddelivery.ondc.client;
 import org.springframework.stereotype.Component;
 import java.util.Map;
 
-@Component
+@Component("ondcPaymentServiceClientFallback")
 public class PaymentServiceClientFallback implements PaymentServiceClient {
     @Override
     public Map<String, Object> getPaymentStatus(Long orderId) {

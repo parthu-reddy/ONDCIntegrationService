@@ -3,7 +3,7 @@ package com.fooddelivery.ondc.client;
 import org.springframework.stereotype.Component;
 import java.util.Map;
 
-@Component
+@Component("ondcDeliveryServiceClientFallback")
 public class DeliveryServiceClientFallback implements DeliveryServiceClient {
     @Override
     public Map<String, Object> assignDeliveryFromOndc(Map<String, Object> deliveryPayload) {

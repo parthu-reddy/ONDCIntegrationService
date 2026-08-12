@@ -4,7 +4,7 @@ import org.springframework.stereotype.Component;
 import java.math.BigDecimal;
 import java.util.Map;
 
-@Component
+@Component("ondcLedgerServiceClientFallback")
 public class LedgerServiceClientFallback implements LedgerServiceClient {
     @Override
     public Map<String, Object> createLedgerEntry(Map<String, Object> ledgerEntry) {

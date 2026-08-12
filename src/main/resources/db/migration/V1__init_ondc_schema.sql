@@ -70,15 +70,6 @@ CREATE TABLE ondc_catalog_sync_logs (
 );
 
 -- Outbox events table for the Transactional Outbox Pattern (CommonLibrary OutboxEventPoller)
-CREATE TABLE outbox_events (
-    id UUID PRIMARY KEY,
-    aggregate_type VARCHAR(255) NOT NULL,
-    aggregate_id VARCHAR(255) NOT NULL,
-    event_type VARCHAR(255) NOT NULL,
-    payload TEXT NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    processed_at TIMESTAMP,
-    status VARCHAR(20) DEFAULT 'PENDING' NOT NULL
-);
 
-CREATE INDEX idx_outbox_pending ON outbox_events(status, created_at);
+
+

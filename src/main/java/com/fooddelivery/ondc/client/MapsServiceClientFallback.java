@@ -3,7 +3,7 @@ package com.fooddelivery.ondc.client;
 import org.springframework.stereotype.Component;
 import java.util.Map;
 
-@Component
+@Component("ondcMapsServiceClientFallback")
 public class MapsServiceClientFallback implements MapsServiceClient {
     @Override
     public Map<String, Object> getDistance(double originLat, double originLng, double destLat, double destLng) {

@@ -4,7 +4,7 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.Map;
 
-@Component
+@Component("ondcRestaurantServiceClientFallback")
 public class RestaurantServiceClientFallback implements RestaurantServiceClient {
     @Override
     public Map<String, Object> getServiceableRestaurants(double latitude, double longitude, double radiusKm) {

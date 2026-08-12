@@ -49,8 +49,6 @@ spring:
 
 server:
   port: ${SERVER_PORT:8098}
-  servlet:
-    context-path: /ondc
 
 # ONDC configuration — values resolved from ConfigService / environment
 ondc:
