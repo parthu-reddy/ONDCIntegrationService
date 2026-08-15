@@ -9,9 +9,10 @@ import org.springframework.web.client.RestTemplate;
 import java.util.Map;
 
 @Service
+@lombok.extern.slf4j.Slf4j
 public class BapStatusService {
     @java.lang.SuppressWarnings("all")
-    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(BapStatusService.class);
+
     private final RestTemplate ondcRestTemplate;
     private final OndcContextBuilder contextBuilder;
 

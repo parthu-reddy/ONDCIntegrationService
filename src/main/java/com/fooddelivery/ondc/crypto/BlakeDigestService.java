@@ -10,9 +10,10 @@ import java.util.Base64;
  * ONDC mandates BLAKE-512 — SHA digests are categorically rejected.
  */
 @Service
+@lombok.extern.slf4j.Slf4j
 public class BlakeDigestService {
     @java.lang.SuppressWarnings("all")
-    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(BlakeDigestService.class);
+
     private static final int BLAKE2B_512_DIGEST_SIZE = 64; // 512 bits = 64 bytes
 
     /**

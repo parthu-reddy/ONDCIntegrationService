@@ -56,6 +56,8 @@ public class OndcSecurityConfig {
                         .requestMatchers("/ondc-site-verification.html").permitAll()
                         // Actuator endpoints
                         .requestMatchers("/actuator/**").permitAll()
+                        // OpenAPI specs
+                        .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
                         // Internal admin APIs require authentication via PreAuthFilter
                         .requestMatchers("/api/ondc/**").authenticated()
                         .anyRequest().authenticated()

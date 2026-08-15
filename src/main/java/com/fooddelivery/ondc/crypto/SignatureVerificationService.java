@@ -12,9 +12,10 @@ import java.time.Instant;
  * sender's public key, reconstructs the signing string, and validates the Ed25519 signature.
  */
 @Service
+@lombok.extern.slf4j.Slf4j
 public class SignatureVerificationService {
     @java.lang.SuppressWarnings("all")
-    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(SignatureVerificationService.class);
+
     private final Ed25519KeyManager ed25519KeyManager;
     private final BlakeDigestService blakeDigestService;
     private final SignatureService signatureService;

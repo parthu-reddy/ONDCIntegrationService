@@ -1,7 +1,7 @@
 package com.fooddelivery.ondc.beckn.bpp;
 
 import org.springframework.transaction.annotation.Transactional;
-import com.fooddelivery.ondc.client.PaymentServiceClient;
+import com.fooddelivery.common.client.PaymentServiceClient;
 import com.fooddelivery.ondc.client.RestaurantServiceClient;
 import com.fooddelivery.ondc.dto.OndcAckResponse;
 import com.fooddelivery.ondc.dto.OndcRequest;
@@ -21,9 +21,10 @@ import org.springframework.web.bind.annotation.RestController;
  * CRITICAL: Payment type and status MUST come from PaymentServiceClient — no mocks.
  */
 @RestController
+@lombok.extern.slf4j.Slf4j
 public class BppInitController {
     @java.lang.SuppressWarnings("all")
-    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(BppInitController.class);
+
     private final OndcSchemaValidator schemaValidator;
     private final OndcTransactionRepository transactionRepository;
     private final BppCallbackService callbackService;

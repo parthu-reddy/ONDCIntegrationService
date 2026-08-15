@@ -1,7 +1,7 @@
 package com.fooddelivery.ondc.settlement;
 
 import com.fooddelivery.ondc.client.LedgerServiceClient;
-import com.fooddelivery.ondc.client.PaymentServiceClient;
+import com.fooddelivery.common.client.PaymentServiceClient;
 import com.fooddelivery.ondc.config.OndcKafkaConfig;
 import com.fooddelivery.ondc.entity.OndcSettlementRecord;
 import com.fooddelivery.ondc.repository.OndcSettlementRepository;
@@ -16,9 +16,10 @@ import java.util.Map;
  * Ensures idempotent settlement processing per user financial integrity rules.
  */
 @Service
+@lombok.extern.slf4j.Slf4j
 public class SettlementService {
     @java.lang.SuppressWarnings("all")
-    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(SettlementService.class);
+
     private final OndcSettlementRepository settlementRepository;
     private final LedgerServiceClient ledgerClient;
     private final PaymentServiceClient paymentClient;

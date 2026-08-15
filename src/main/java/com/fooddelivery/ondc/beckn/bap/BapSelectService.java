@@ -7,9 +7,10 @@ import org.springframework.web.client.RestTemplate;
  * BAP Select Service — sends /select to a specific BPP with cart items.
  */
 @Service
+@lombok.extern.slf4j.Slf4j
 public class BapSelectService {
     @java.lang.SuppressWarnings("all")
-    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(BapSelectService.class);
+
     private final RestTemplate ondcRestTemplate;
     private final com.fooddelivery.ondc.util.OndcContextBuilder contextBuilder;
 

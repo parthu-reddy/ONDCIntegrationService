@@ -23,9 +23,10 @@ import static com.fooddelivery.ondc.config.OndcKafkaConfig.TOPIC_ONDC_CALLBACK_D
  * and send the callback with retry + DLQ on final failure.
  */
 @Service
+@lombok.extern.slf4j.Slf4j
 public class BppCallbackService {
     @java.lang.SuppressWarnings("all")
-    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(BppCallbackService.class);
+
     private final RestTemplate ondcRestTemplate;
     private final OndcContextBuilder contextBuilder;
     private final RestaurantServiceClient restaurantServiceClient;

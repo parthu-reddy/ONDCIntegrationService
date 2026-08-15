@@ -12,9 +12,10 @@ import org.springframework.web.bind.annotation.RestController;
  * BAP /on_cancel callback — receives cancellation acknowledgement.
  */
 @RestController
+@lombok.extern.slf4j.Slf4j
 public class BapOnCancelController {
     @java.lang.SuppressWarnings("all")
-    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(BapOnCancelController.class);
+
     private final OndcSchemaValidator schemaValidator;
 
     @PostMapping("/on_cancel")

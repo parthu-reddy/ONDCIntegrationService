@@ -15,9 +15,10 @@ import java.util.Base64;
  * Computes shared secrets and decrypts AES challenges.
  */
 @Service
+@lombok.extern.slf4j.Slf4j
 public class X25519KeyManager {
     @java.lang.SuppressWarnings("all")
-    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(X25519KeyManager.class);
+
     private final OndcProperties ondcProperties;
 
     public X25519KeyManager(OndcProperties ondcProperties) {

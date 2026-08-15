@@ -4,9 +4,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 @Service
+@lombok.extern.slf4j.Slf4j
 public class BapCancelService {
     @java.lang.SuppressWarnings("all")
-    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(BapCancelService.class);
+
     private final RestTemplate ondcRestTemplate;
     private final com.fooddelivery.ondc.util.OndcContextBuilder contextBuilder;
 

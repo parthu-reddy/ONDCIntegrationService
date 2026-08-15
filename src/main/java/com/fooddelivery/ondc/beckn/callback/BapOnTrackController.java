@@ -12,9 +12,10 @@ import org.springframework.web.bind.annotation.RestController;
  * BAP /on_track callback — receives tracking URL from BPP.
  */
 @RestController
+@lombok.extern.slf4j.Slf4j
 public class BapOnTrackController {
     @java.lang.SuppressWarnings("all")
-    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(BapOnTrackController.class);
+
     private final OndcSchemaValidator schemaValidator;
 
     @PostMapping("/on_track")

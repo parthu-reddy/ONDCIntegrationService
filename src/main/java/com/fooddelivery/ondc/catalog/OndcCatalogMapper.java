@@ -11,9 +11,10 @@ import java.util.HashMap;
  * Brand → Provider, Outlet → Location, MenuItem → Item.
  */
 @Component
+@lombok.extern.slf4j.Slf4j
 public class OndcCatalogMapper {
     @java.lang.SuppressWarnings("all")
-    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(OndcCatalogMapper.class);
+
     private final DietaryTagMapper dietaryTagMapper;
 
     public OndcCatalogMapper(DietaryTagMapper dietaryTagMapper) {

@@ -6,9 +6,9 @@ import org.springframework.stereotype.Service;
  * Maps internal cuisine categories to ONDC:RET11 taxonomy codes.
  */
 @Service
+@lombok.extern.slf4j.Slf4j
 public class TaxonomyMappingService {
     @java.lang.SuppressWarnings("all")
-    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(TaxonomyMappingService.class);
 
     /**
      * Maps an internal cuisine or category string to the ONDC:RET11 taxonomy code.

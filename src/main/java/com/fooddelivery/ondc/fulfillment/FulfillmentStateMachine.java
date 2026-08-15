@@ -9,9 +9,10 @@ import java.time.Duration;
  * Tracks current state per transaction in Redis and validates transitions.
  */
 @Service
+@lombok.extern.slf4j.Slf4j
 public class FulfillmentStateMachine {
     @java.lang.SuppressWarnings("all")
-    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(FulfillmentStateMachine.class);
+
     private final ForbiddenStateGuard forbiddenStateGuard;
     private final StringRedisTemplate redisTemplate;
     private static final String REDIS_KEY_PREFIX = "ondc:fulfillment:state:";

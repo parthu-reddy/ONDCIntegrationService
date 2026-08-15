@@ -10,9 +10,10 @@ import java.util.Set;
  * Validates that transitions are one-directional and forbidden states are never emitted.
  */
 @Component
+@lombok.extern.slf4j.Slf4j
 public class ForbiddenStateGuard {
     @java.lang.SuppressWarnings("all")
-    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(ForbiddenStateGuard.class);
+
     private static final Set<String> FORBIDDEN_STATES = Set.of("In-transit", "At-destination-hub", "Out-for-delivery");
     /**
      * Valid transitions: from → set of allowed next states

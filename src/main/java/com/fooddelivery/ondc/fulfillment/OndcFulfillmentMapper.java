@@ -8,9 +8,9 @@ import org.springframework.stereotype.Component;
  * enums and the ONDC:RET11 fulfillment states.
  */
 @Component
+@lombok.extern.slf4j.Slf4j
 public class OndcFulfillmentMapper {
     @java.lang.SuppressWarnings("all")
-    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(OndcFulfillmentMapper.class);
 
     /**
      * Maps internal order status string to ONDC fulfillment state.

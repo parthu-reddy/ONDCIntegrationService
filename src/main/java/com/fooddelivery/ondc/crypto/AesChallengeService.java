@@ -8,9 +8,10 @@ import org.springframework.stereotype.Service;
  * during the /on_subscribe callback.
  */
 @Service
+@lombok.extern.slf4j.Slf4j
 public class AesChallengeService {
     @java.lang.SuppressWarnings("all")
-    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(AesChallengeService.class);
+
     private final X25519KeyManager x25519KeyManager;
     private final OndcProperties ondcProperties;
 

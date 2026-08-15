@@ -8,9 +8,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 @Service
+@lombok.extern.slf4j.Slf4j
 public class BapTrackService {
     @java.lang.SuppressWarnings("all")
-    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(BapTrackService.class);
+
     private final RestTemplate ondcRestTemplate;
     private final OndcContextBuilder contextBuilder;
 

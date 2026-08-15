@@ -13,9 +13,10 @@ import java.util.Base64;
  * Signs outgoing payloads and verifies incoming signatures.
  */
 @Service
+@lombok.extern.slf4j.Slf4j
 public class Ed25519KeyManager {
     @java.lang.SuppressWarnings("all")
-    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(Ed25519KeyManager.class);
+
     private final OndcProperties ondcProperties;
 
     public Ed25519KeyManager(OndcProperties ondcProperties) {

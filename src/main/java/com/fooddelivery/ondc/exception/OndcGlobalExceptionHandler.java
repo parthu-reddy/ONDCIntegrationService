@@ -12,9 +12,9 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
  * Returns NACK responses with appropriate error codes per ONDC spec.
  */
 @RestControllerAdvice(basePackages = "com.fooddelivery.ondc")
+@lombok.extern.slf4j.Slf4j
 public class OndcGlobalExceptionHandler {
     @java.lang.SuppressWarnings("all")
-    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(OndcGlobalExceptionHandler.class);
 
     @ExceptionHandler(OndcSignatureException.class)
     public ResponseEntity<OndcAckResponse> handleSignatureException(OndcSignatureException ex) {

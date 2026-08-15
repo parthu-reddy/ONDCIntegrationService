@@ -13,9 +13,10 @@ import java.util.UUID;
  * Builds and submits /subscribe payloads to the ONDC registry.
  */
 @Service
+@lombok.extern.slf4j.Slf4j
 public class SubscriptionService {
     @java.lang.SuppressWarnings("all")
-    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(SubscriptionService.class);
+
     private final OndcProperties ondcProperties;
     private final Ed25519KeyManager ed25519KeyManager;
     private final RestTemplate ondcRestTemplate;

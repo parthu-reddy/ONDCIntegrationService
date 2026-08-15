@@ -25,9 +25,10 @@ import static com.fooddelivery.ondc.config.OndcKafkaConfig.TOPIC_ONDC_ORDER_CREA
  * not hardcoded. Financial data comes from the locked quote in the init phase.
  */
 @RestController
+@lombok.extern.slf4j.Slf4j
 public class BppConfirmController {
     @java.lang.SuppressWarnings("all")
-    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(BppConfirmController.class);
+
     private final OndcSchemaValidator schemaValidator;
     private final OndcTransactionRepository transactionRepository;
     private final KafkaTemplate<String, String> kafkaTemplate;

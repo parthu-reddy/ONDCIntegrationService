@@ -16,9 +16,10 @@ import org.springframework.web.bind.annotation.RestController;
  * Returns ACK synchronously, triggers async /on_track callback with tracking info.
  */
 @RestController
+@lombok.extern.slf4j.Slf4j
 public class BppTrackController {
     @java.lang.SuppressWarnings("all")
-    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(BppTrackController.class);
+
     private final OndcSchemaValidator schemaValidator;
     private final OndcTransactionRepository transactionRepository;
     private final BppCallbackService callbackService;

@@ -23,9 +23,10 @@ import static com.fooddelivery.ondc.config.OndcKafkaConfig.TOPIC_ONDC_ORDER_STAT
  * This enables proactive status updates (not just on BAP polling).
  */
 @Service
+@lombok.extern.slf4j.Slf4j
 public class ProactiveStatusPublisher {
     @java.lang.SuppressWarnings("all")
-    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(ProactiveStatusPublisher.class);
+
     private final FulfillmentStateMachine stateMachine;
     private final OndcFulfillmentMapper fulfillmentMapper;
     private final ObjectMapper objectMapper;

@@ -8,9 +8,9 @@ import org.springframework.stereotype.Component;
  * Validates incoming ONDC request payloads against mandatory schema fields.
  */
 @Component
+@lombok.extern.slf4j.Slf4j
 public class OndcSchemaValidator {
     @java.lang.SuppressWarnings("all")
-    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(OndcSchemaValidator.class);
 
     /**
      * Validates that the request contains all mandatory context fields.

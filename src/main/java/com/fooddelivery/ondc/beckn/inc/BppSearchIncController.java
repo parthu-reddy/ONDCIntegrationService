@@ -12,9 +12,10 @@ import org.springframework.web.bind.annotation.RestController;
  * BPP /search_inc endpoint — receives incremental search requests for catalog deltas.
  */
 @RestController
+@lombok.extern.slf4j.Slf4j
 public class BppSearchIncController {
     @java.lang.SuppressWarnings("all")
-    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(BppSearchIncController.class);
+
     private final OndcSchemaValidator schemaValidator;
 
     @PostMapping("/search_inc")

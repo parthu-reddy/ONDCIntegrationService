@@ -7,9 +7,10 @@ import org.springframework.web.client.RestTemplate;
  * BAP Confirm Service — sends /confirm to BPP with payment proof.
  */
 @Service
+@lombok.extern.slf4j.Slf4j
 public class BapConfirmService {
     @java.lang.SuppressWarnings("all")
-    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(BapConfirmService.class);
+
     private final RestTemplate ondcRestTemplate;
     private final com.fooddelivery.ondc.util.OndcContextBuilder contextBuilder;
 

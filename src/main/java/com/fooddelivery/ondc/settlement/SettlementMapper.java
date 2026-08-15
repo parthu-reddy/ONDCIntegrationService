@@ -7,9 +7,9 @@ import java.math.BigDecimal;
  * Maps internal ledger entries to ONDC settlement schema and vice-versa.
  */
 @Component
+@lombok.extern.slf4j.Slf4j
 public class SettlementMapper {
     @java.lang.SuppressWarnings("all")
-    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(SettlementMapper.class);
 
     /**
      * Maps an incoming ONDC recon order to an internal settlement record.

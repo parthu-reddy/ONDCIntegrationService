@@ -19,9 +19,10 @@ import static com.fooddelivery.ondc.config.OndcKafkaConfig.TOPIC_ONDC_SEARCH_REQ
  */
 @RestController
 @Transactional
+@lombok.extern.slf4j.Slf4j
 public class BppSearchController {
     @java.lang.SuppressWarnings("all")
-    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(BppSearchController.class);
+
     private final OndcSchemaValidator schemaValidator;
     private final OndcTransactionRepository transactionRepository;
     private final KafkaTemplate<String, String> kafkaTemplate;

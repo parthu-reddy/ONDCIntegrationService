@@ -8,9 +8,9 @@ import org.springframework.stereotype.Service;
  * Enforces FSSAI, GSTIN format, mandatory fields.
  */
 @Service
+@lombok.extern.slf4j.Slf4j
 public class CatalogValidationService {
     @java.lang.SuppressWarnings("all")
-    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(CatalogValidationService.class);
 
     /**
      * Validates FSSAI license number (must be exactly 14 digits).

@@ -21,9 +21,10 @@ import java.io.IOException;
  */
 @Component
 @Order(2)
+@lombok.extern.slf4j.Slf4j
 public class OndcAuthorizationFilter extends OncePerRequestFilter {
     @java.lang.SuppressWarnings("all")
-    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(OndcAuthorizationFilter.class);
+
     private final SignatureVerificationService signatureVerificationService;
 
     @Override

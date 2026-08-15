@@ -11,9 +11,10 @@ import java.io.IOException;
  * Intercepts outgoing HTTP requests to ONDC network participants and adds
  * the cryptographic Authorization header with Ed25519 signature.
  */
+@lombok.extern.slf4j.Slf4j
 public class OndcRequestInterceptor implements ClientHttpRequestInterceptor {
     @java.lang.SuppressWarnings("all")
-    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(OndcRequestInterceptor.class);
+
     private final SignatureService signatureService;
 
     @Override

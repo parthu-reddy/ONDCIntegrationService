@@ -24,9 +24,10 @@ import org.springframework.web.bind.annotation.RestController;
  * must not trigger double refund.
  */
 @RestController
+@lombok.extern.slf4j.Slf4j
 public class BppCancelController {
     @java.lang.SuppressWarnings("all")
-    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(BppCancelController.class);
+
     private final OndcSchemaValidator schemaValidator;
     private final OndcTransactionRepository transactionRepository;
     private final BppCallbackService callbackService;

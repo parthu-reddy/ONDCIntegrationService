@@ -23,9 +23,10 @@ import static com.fooddelivery.ondc.config.OndcKafkaConfig.TOPIC_ONDC_CATALOG_DE
  * and pushes on_search_inc updates to subscribed BAPs.
  */
 @Service
+@lombok.extern.slf4j.Slf4j
 public class CatalogDeltaSyncService {
     @java.lang.SuppressWarnings("all")
-    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(CatalogDeltaSyncService.class);
+
     private final OndcContextBuilder contextBuilder;
     private final OndcProperties ondcProperties;
     private final RestTemplate ondcRestTemplate;

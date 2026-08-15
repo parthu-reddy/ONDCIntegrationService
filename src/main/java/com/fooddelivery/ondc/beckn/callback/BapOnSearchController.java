@@ -12,9 +12,10 @@ import org.springframework.web.bind.annotation.RestController;
  * BAP /on_search callback — receives catalogs from BPPs. Merges results for the customer.
  */
 @RestController
+@lombok.extern.slf4j.Slf4j
 public class BapOnSearchController {
     @java.lang.SuppressWarnings("all")
-    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(BapOnSearchController.class);
+
     private final OndcSchemaValidator schemaValidator;
 
     @PostMapping("/on_search")

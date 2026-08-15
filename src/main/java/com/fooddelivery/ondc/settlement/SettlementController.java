@@ -16,9 +16,10 @@ import java.util.concurrent.CompletableFuture;
  * Settlement and reconciliation callback endpoints (RSF 2.0).
  */
 @RestController
+@lombok.extern.slf4j.Slf4j
 public class SettlementController {
     @java.lang.SuppressWarnings("all")
-    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(SettlementController.class);
+
     private final OndcSchemaValidator schemaValidator;
     private final SettlementService settlementService;
     private final ReconciliationService reconciliationService;

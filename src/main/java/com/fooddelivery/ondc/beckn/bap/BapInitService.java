@@ -7,9 +7,10 @@ import org.springframework.web.client.RestTemplate;
  * BAP Init Service — sends /init to BPP with billing and delivery details.
  */
 @Service
+@lombok.extern.slf4j.Slf4j
 public class BapInitService {
     @java.lang.SuppressWarnings("all")
-    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(BapInitService.class);
+
     private final RestTemplate ondcRestTemplate;
     private final com.fooddelivery.ondc.util.OndcContextBuilder contextBuilder;
 

@@ -11,10 +11,8 @@ import com.fooddelivery.ondc.config.OndcProperties;
 
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 
-@SpringBootApplication(scanBasePackages = {
-        "com.fooddelivery.ondc",
-        "com.fooddelivery.common"
-})
+@SpringBootApplication(scanBasePackages = {"com.fooddelivery.ondc",
+        "com.fooddelivery.common", "com.fooddelivery"})
 @org.springframework.data.jpa.repository.config.EnableJpaRepositories(basePackages = {"com.fooddelivery.ondc", "com.fooddelivery.common"})
 @org.springframework.boot.autoconfigure.domain.EntityScan(basePackages = {"com.fooddelivery.ondc", "com.fooddelivery.common"})
 @com.fooddelivery.common.outbox.config.EnableOutbox

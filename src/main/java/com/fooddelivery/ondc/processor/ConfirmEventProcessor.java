@@ -17,9 +17,10 @@ import java.util.Map;
  * triggers ONDC BAP confirm.
  */
 @Service
+@lombok.extern.slf4j.Slf4j
 public class ConfirmEventProcessor {
     @java.lang.SuppressWarnings("all")
-    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(ConfirmEventProcessor.class);
+
     private final BapConfirmService bapConfirmService;
 
     @RetryableTopic(attempts = "5", backoff = @Backoff(delay = 1000, multiplier = 2.0), autoCreateTopics = "true", dltStrategy = DltStrategy.FAIL_ON_ERROR)

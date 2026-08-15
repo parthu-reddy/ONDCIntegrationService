@@ -9,9 +9,10 @@ import org.springframework.web.bind.annotation.RestController;
  * Serves the ONDC site verification HTML file.
  */
 @RestController
+@lombok.extern.slf4j.Slf4j
 public class SiteVerificationController {
     @java.lang.SuppressWarnings("all")
-    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(SiteVerificationController.class);
+
     private final SiteVerificationService siteVerificationService;
 
     @GetMapping(value = "/ondc-site-verification.html", produces = MediaType.TEXT_HTML_VALUE)

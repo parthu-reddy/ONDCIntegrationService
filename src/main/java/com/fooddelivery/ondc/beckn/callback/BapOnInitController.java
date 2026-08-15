@@ -12,9 +12,10 @@ import org.springframework.web.bind.annotation.RestController;
  * BAP /on_init callback — receives locked quote + payment details from BPP.
  */
 @RestController
+@lombok.extern.slf4j.Slf4j
 public class BapOnInitController {
     @java.lang.SuppressWarnings("all")
-    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(BapOnInitController.class);
+
     private final OndcSchemaValidator schemaValidator;
 
     @PostMapping("/on_init")

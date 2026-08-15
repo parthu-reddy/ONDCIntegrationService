@@ -12,9 +12,10 @@ import org.springframework.web.bind.annotation.RestController;
  * BAP /on_select callback — receives quote breakdown from BPP.
  */
 @RestController
+@lombok.extern.slf4j.Slf4j
 public class BapOnSelectController {
     @java.lang.SuppressWarnings("all")
-    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(BapOnSelectController.class);
+
     private final OndcSchemaValidator schemaValidator;
 
     @PostMapping("/on_select")

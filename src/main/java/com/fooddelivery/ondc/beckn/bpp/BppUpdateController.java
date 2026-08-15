@@ -16,9 +16,10 @@ import org.springframework.web.bind.annotation.RestController;
  * Returns ACK synchronously, triggers async /on_update callback.
  */
 @RestController
+@lombok.extern.slf4j.Slf4j
 public class BppUpdateController {
     @java.lang.SuppressWarnings("all")
-    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(BppUpdateController.class);
+
     private final OndcSchemaValidator schemaValidator;
     private final OndcTransactionRepository transactionRepository;
     private final BppCallbackService callbackService;

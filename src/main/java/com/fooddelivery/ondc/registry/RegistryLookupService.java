@@ -14,9 +14,10 @@ import java.util.concurrent.TimeUnit;
  * public keys. Caches results in Redis with configurable TTL.
  */
 @Service
+@lombok.extern.slf4j.Slf4j
 public class RegistryLookupService {
     @java.lang.SuppressWarnings("all")
-    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(RegistryLookupService.class);
+
     private final OndcProperties ondcProperties;
     private final RestTemplate ondcRestTemplate;
     private final RedisTemplate<String, Object> ondcRedisTemplate;

@@ -13,9 +13,10 @@ import java.util.Map;
  * This is the critical handshake that activates the NP on the ONDC network.
  */
 @RestController
+@lombok.extern.slf4j.Slf4j
 public class OnSubscribeController {
     @java.lang.SuppressWarnings("all")
-    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(OnSubscribeController.class);
+
     private final AesChallengeService aesChallengeService;
 
     /**

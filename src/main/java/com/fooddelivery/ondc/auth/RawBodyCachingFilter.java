@@ -24,9 +24,10 @@ import java.io.IOException;
  */
 @Component
 @Order(Ordered.HIGHEST_PRECEDENCE)
+@lombok.extern.slf4j.Slf4j
 public class RawBodyCachingFilter extends OncePerRequestFilter {
     @java.lang.SuppressWarnings("all")
-    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(RawBodyCachingFilter.class);
+
     public static final String CACHED_BODY_ATTRIBUTE = "ONDC_RAW_BODY";
 
     @Override

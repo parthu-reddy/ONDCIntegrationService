@@ -10,9 +10,10 @@ import java.util.Map;
  * for order-level financial reconciliation with the Settlement Agency.
  */
 @Service
+@lombok.extern.slf4j.Slf4j
 public class ReconciliationService {
     @java.lang.SuppressWarnings("all")
-    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(ReconciliationService.class);
+
     private final SettlementService settlementService;
     private final SettlementMapper settlementMapper;
     private final LedgerServiceClient ledgerServiceClient;

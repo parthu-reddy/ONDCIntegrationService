@@ -15,9 +15,10 @@ import java.time.Instant;
  * The signing string uses actual newline characters (\n), not escaped literals.
  */
 @Service
+@lombok.extern.slf4j.Slf4j
 public class SignatureService {
     @java.lang.SuppressWarnings("all")
-    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(SignatureService.class);
+
     private final Ed25519KeyManager ed25519KeyManager;
     private final BlakeDigestService blakeDigestService;
     private final OndcProperties ondcProperties;

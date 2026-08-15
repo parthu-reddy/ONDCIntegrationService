@@ -18,9 +18,10 @@ import java.util.Map;
  * Extracts rating value and forwards to RestaurantServiceClient.
  */
 @RestController
+@lombok.extern.slf4j.Slf4j
 public class BppRatingController {
     @java.lang.SuppressWarnings("all")
-    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(BppRatingController.class);
+
     private final OndcSchemaValidator schemaValidator;
     private final OndcTransactionRepository transactionRepository;
     private final RestaurantServiceClient restaurantServiceClient;

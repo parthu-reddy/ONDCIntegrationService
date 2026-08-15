@@ -13,9 +13,10 @@ import java.util.ArrayList;
  * via Feign and transforms it into ONDC-compliant catalog format.
  */
 @Service
+@lombok.extern.slf4j.Slf4j
 public class CatalogSyndicationService {
     @java.lang.SuppressWarnings("all")
-    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(CatalogSyndicationService.class);
+
     private final RestaurantServiceClient restaurantServiceClient;
     private final OndcCatalogMapper catalogMapper;
     private final CatalogValidationService validationService;

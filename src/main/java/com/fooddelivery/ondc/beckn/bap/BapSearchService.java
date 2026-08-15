@@ -11,9 +11,10 @@ import org.springframework.web.client.RestTemplate;
  * Results arrive asynchronously via BapOnSearchController.
  */
 @Service
+@lombok.extern.slf4j.Slf4j
 public class BapSearchService {
     @java.lang.SuppressWarnings("all")
-    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(BapSearchService.class);
+
     private final OndcContextBuilder contextBuilder;
     private final RestTemplate ondcRestTemplate;
 
