@@ -12,6 +12,7 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
  * and callback tracking.
  */
 @Configuration
+@org.springframework.boot.autoconfigure.condition.ConditionalOnProperty(name = "spring.redis.enabled", matchIfMissing = true)
 public class RedisConfig {
 
     @Bean
