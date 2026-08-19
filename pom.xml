@@ -321,20 +321,6 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>pre-integration-test</id>
-                        <goals>
-                            <goal>start</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>post-integration-test</id>
-                        <goals>
-                            <goal>stop</goal>
-                        </goals>
-                    </execution>
-                </executions>
 
                 <configuration>
                     <mainClass>com.fooddelivery.ondc.OndcIntegrationApplication</mainClass>
@@ -354,13 +340,8 @@
                 <version>4.1.2</version>
                 <extensions>true</extensions>
                 <configuration>
-                    <skip>true</skip><testFramework>JUNIT5</testFramework>
+                    <testFramework>JUNIT5</testFramework>
                     <failOnNoContracts>false</failOnNoContracts>
-                    <contractDependency>
-                        <groupId>${project.groupId}</groupId>
-                        <artifactId>${project.artifactId}</artifactId>
-                        <version>${project.version}</version>
-                    </contractDependency>
 
                     <baseClassMappings><baseClassMapping><contractPackageRegex>.*messaging.*</contractPackageRegex><baseClassFQN>com.fooddelivery.ondc.contract.BaseMessagingClass</baseClassFQN></baseClassMapping></baseClassMappings></configuration>
             </plugin>
