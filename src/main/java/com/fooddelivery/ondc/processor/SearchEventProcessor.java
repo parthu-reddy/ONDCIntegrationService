@@ -37,10 +37,25 @@ public class SearchEventProcessor {
     public void handleSearchRequest(String eventJson, @org.springframework.messaging.handler.annotation.Headers java.util.Map<String, Object> headers) {
         log.info("Received internal search request: {}", eventJson);
         try {
-            com.fasterxml.jackson.databind.ObjectMapper mapper = new com.fasterxml.jackson.databind.ObjectMapper();
+            com.fasterxml.jackson.databind.ObjectMapper mapper = new com.fasterxml.jackson.databind.ObjectMapper()
+                    .configure(com.fasterxml.jackson.databind.DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
             Map<String, Object> request = mapper.readValue(eventJson, new com.fasterxml.jackson.core.type.TypeReference<>() {
             });
-            String city = (String) request.get("city");
+
+            // BppSearchController publishes a serialized OndcRequest -- the Beckn envelope
+            // {context, message}. `city` lives on the context (OndcContext.city carries no
+            // @JsonProperty, so it serializes as context.city), NOT at the root, which is why the
+            // previous root read was always null and every search was rejected below.
+            com.fooddelivery.ondc.dto.OndcRequest ondcRequest =
+                    mapper.readValue(eventJson, com.fooddelivery.ondc.dto.OndcRequest.class);
+            com.fooddelivery.ondc.dto.OndcContext context = ondcRequest.getContext();
+            String city = context != null ? context.getCity() : null;
+
+            // TODO see RandomDocuments/claude/11_OndcSearchAndDeadListeners: gps and searchKey live
+            // inside message.intent, which OndcMessage models as a bare Object, so the correct path
+            // cannot be derived from the code. Confirm against the Beckn spec version in
+            // context.core_version, or a captured real BAP /search payload, before wiring these up.
+            // Until then they stay null and the guard below still short-circuits.
             String gps = (String) request.get("gps");
             String searchKey = (String) request.get("searchKey");
             
@@ -62,7 +77,9 @@ public class SearchEventProcessor {
             if (city != null && gps != null) {
                 bapSearchService.search(city, gps, searchKey);
             } else {
-                log.warn("Invalid search request payload: missing city or gps");
+                log.warn("Search request not dispatched -- city={}, gps={} (gps extraction from "
+                        + "message.intent is not yet implemented; see item 11). transactionId={}",
+                        city, gps, context != null ? context.getTransactionId() : null);
             }
 
             try {
