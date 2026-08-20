@@ -191,9 +191,21 @@ public class BppCallbackService {
         publishToDlq(action, incomingContext.getTransactionId(), t.getMessage());
     }
 
+    private static final com.fasterxml.jackson.databind.ObjectMapper DLQ_MAPPER =
+            new com.fasterxml.jackson.databind.ObjectMapper();
+
     private void publishToDlq(String action, String transactionId, String errorMessage) {
         try {
-            String dlqPayload = String.format("{\"action\":\"%s\",\"transactionId\":\"%s\",\"error\":\"%s\",\"timestamp\":\"%s\"}", action, transactionId, errorMessage != null ? errorMessage.replace("\"", "\'") : "unknown", java.time.Instant.now().toString());
+            // Built with Jackson rather than String.format: errorMessage is an exception message,
+            // which routinely contains quotes, backslashes and newlines. The previous
+            // replace("\"", "'") handled quotes only, so a message containing a backslash or a
+            // newline still produced malformed JSON on the DLQ.
+            java.util.Map<String, Object> dlq = new java.util.LinkedHashMap<>();
+            dlq.put("action", action);
+            dlq.put("transactionId", transactionId);
+            dlq.put("error", errorMessage != null ? errorMessage : "unknown");
+            dlq.put("timestamp", java.time.Instant.now().toString());
+            String dlqPayload = DLQ_MAPPER.writeValueAsString(dlq);
             kafkaTemplate.send(TOPIC_ONDC_CALLBACK_DLQ, transactionId, dlqPayload);
             log.info("Published failed {} callback to DLQ for transaction: {}", action, transactionId);
         } catch (Exception e) {

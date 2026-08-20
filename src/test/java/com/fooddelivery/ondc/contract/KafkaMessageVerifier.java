@@ -36,7 +36,7 @@ public class KafkaMessageVerifier implements MessageVerifierReceiver<Message<?>>
         }
     }
 
-    @KafkaListener(id = "contract-test-listener", topics = {"ondc.order.created", "ondc.settlement.event"})
+    @KafkaListener(id = "contract-test-listener", topics = {"ondc.order.created", "ondc.settlement.event", "ondc.search.request"})
     public void listen(ConsumerRecord<String, String> record) {
         Map<String, Object> headers = new HashMap<>();
         record.headers().forEach(h -> headers.put(h.key(), new String(h.value())));

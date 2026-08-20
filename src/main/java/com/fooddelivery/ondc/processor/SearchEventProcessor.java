@@ -51,13 +51,17 @@ public class SearchEventProcessor {
             com.fooddelivery.ondc.dto.OndcContext context = ondcRequest.getContext();
             String city = context != null ? context.getCity() : null;
 
-            // TODO see RandomDocuments/claude/11_OndcSearchAndDeadListeners: gps and searchKey live
-            // inside message.intent, which OndcMessage models as a bare Object, so the correct path
-            // cannot be derived from the code. Confirm against the Beckn spec version in
-            // context.core_version, or a captured real BAP /search payload, before wiring these up.
-            // Until then they stay null and the guard below still short-circuits.
-            String gps = (String) request.get("gps");
-            String searchKey = (String) request.get("searchKey");
+            // gps and searchKey live inside message.intent, which OndcMessage models as a bare
+            // Object. The paths are taken from this codebase's own Beckn serialization in
+            // BapSearchService.search(), which builds exactly this structure when WE act as the BAP:
+            //   intent.item.descriptor.name              -> searchKey
+            //   intent.fulfillment.end.location.gps      -> gps
+            // Reading them from the ROOT (as before) always yielded null, so every inbound search
+            // was rejected by the guard below and no catalogue was ever returned.
+            com.fasterxml.jackson.databind.JsonNode intent =
+                    mapper.readTree(eventJson).path("message").path("intent");
+            String gps = intent.path("fulfillment").path("end").path("location").path("gps").asText(null);
+            String searchKey = intent.path("item").path("descriptor").path("name").asText(null);
             
             String extractedEventId = com.fooddelivery.common.util.KafkaHeaderUtils.extractHeaderValue(headers, "eventId");
             final String resolvedEventId;
@@ -77,8 +81,9 @@ public class SearchEventProcessor {
             if (city != null && gps != null) {
                 bapSearchService.search(city, gps, searchKey);
             } else {
-                log.warn("Search request not dispatched -- city={}, gps={} (gps extraction from "
-                        + "message.intent is not yet implemented; see item 11). transactionId={}",
+                log.warn("Search request not dispatched -- the Beckn envelope is missing city "
+                        + "(context.city) or gps (message.intent.fulfillment.end.location.gps). "
+                        + "city={}, gps={}, transactionId={}",
                         city, gps, context != null ? context.getTransactionId() : null);
             }
 

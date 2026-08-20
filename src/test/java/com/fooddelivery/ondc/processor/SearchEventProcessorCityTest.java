@@ -19,10 +19,10 @@ import static org.mockito.ArgumentMatchers.eq;
  * so the guard rejected every search and no catalogue was ever returned to the buyer app. It is now
  * read from `context.city`.
  *
- * NOTE: `gps` is still read from the root, which real payloads do not carry -- see
- * RandomDocuments/claude/11_OndcSearchAndDeadListeners. These tests therefore supply a root-level
- * gps as a stand-in so the dispatch path can be exercised at all. When the real
- * message.intent path is implemented, update these tests with it.
+ * The payload below is a real Beckn envelope. The intent paths mirror what this codebase's own
+ * BapSearchService.search() builds when we act as the BAP:
+ *   intent.item.descriptor.name          -> searchKey
+ *   intent.fulfillment.end.location.gps  -> gps
  */
 class SearchEventProcessorCityTest {
 
@@ -36,29 +36,34 @@ class SearchEventProcessorCityTest {
         processor = new SearchEventProcessor(bapSearchService, idempotencyKeyRepository);
     }
 
-    /** The Beckn envelope the producer really emits: city nested under context, snake_case ids. */
+    /** The Beckn envelope the producer really emits: everything nested, nothing at the root. */
     private String becknSearchEnvelope() {
         return """
                 {"context":{"domain":"ONDC:RET11","action":"search","city":"std:080",
                             "core_version":"1.2.0","bap_id":"buyer-app.example.com",
                             "transaction_id":"2a96c231-e034-5303-8d4a-dab305dbba8b"},
-                 "message":{"intent":{}},
-                 "gps":"12.971598,77.594562","searchKey":"pizza"}
+                 "message":{"intent":{
+                     "item":{"descriptor":{"name":"pizza"}},
+                     "fulfillment":{"type":"Delivery",
+                                    "end":{"location":{"gps":"12.971598,77.594562"}}}}}}
                 """;
     }
 
     @Test
-    void readsCityFromTheBecknContextNotTheRoot() {
+    void dispatchesSearchWithAllThreeValuesResolvedFromTheBecknEnvelope() {
         processor.handleSearchRequest(becknSearchEnvelope(), Map.of());
 
-        // std:080 exists only at context.city. If city were still read from the root it would be
+        // None of these three exist at the root. If any were still read from there it would be
         // null, the guard would reject the request, and search would never be invoked.
-        Mockito.verify(bapSearchService).search(eq("std:080"), any(), any());
+        Mockito.verify(bapSearchService).search(
+                eq("std:080"),                    // context.city
+                eq("12.971598,77.594562"),        // message.intent.fulfillment.end.location.gps
+                eq("pizza"));                     // message.intent.item.descriptor.name
     }
 
     @Test
     void doesNotDispatchWhenTheContextIsAbsent() {
-        processor.handleSearchRequest("{\"message\":{},\"gps\":\"1,2\"}", Map.of());
+        processor.handleSearchRequest("{\"message\":{\"intent\":{}}}", Map.of());
 
         Mockito.verify(bapSearchService, Mockito.never()).search(any(), any(), any());
     }
