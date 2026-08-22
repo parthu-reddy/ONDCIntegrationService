@@ -4,7 +4,7 @@ spring:
   config:
     import: optional:classpath:config/platform-defaults.yml,optional:configserver:http://config-service:8888
   datasource:
-    url: jdbc:postgresql://localhost:5432/ondc_integration_db
+    url: jdbc:postgresql://localhost:5432/ondc_db
     username: ${DB_USERNAME:postgres}
     password: ${DB_PASSWORD:postgres}
     driver-class-name: org.postgresql.Driver

@@ -12,7 +12,7 @@ import java.util.Map;
  * Feign client for CustomerApplication (Eureka: customer-service).
  * Used to create orders from ONDC /confirm and query order status.
  */
-@FeignClient(name = "customer-application", fallback = CustomerServiceClientFallback.class)
+@FeignClient(name = "customer-service", fallback = CustomerServiceClientFallback.class)
 public interface CustomerServiceClient {
 
     @PostMapping("/api/v1/orders/create-from-ondc")

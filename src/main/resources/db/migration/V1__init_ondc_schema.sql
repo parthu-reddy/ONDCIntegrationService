@@ -1,23 +1,3 @@
--- ONDC Integration Service Schema
-
-CREATE TABLE ondc_network_participants (
-    id UUID PRIMARY KEY,
-    subscriber_id VARCHAR(255) NOT NULL UNIQUE,
-    subscriber_url VARCHAR(512) NOT NULL,
-    domain VARCHAR(100) NOT NULL,
-    city VARCHAR(100) NOT NULL,
-    country VARCHAR(10) NOT NULL,
-    type VARCHAR(20) NOT NULL,
-    msn INTEGER DEFAULT 0 NOT NULL,
-    status VARCHAR(20) NOT NULL,
-    signing_public_key VARCHAR(1024),
-    encryption_public_key VARCHAR(1024),
-    valid_from TIMESTAMP,
-    valid_until TIMESTAMP,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL
-);
-
 CREATE TABLE ondc_transactions (
     id UUID PRIMARY KEY,
     transaction_id VARCHAR(255) NOT NULL,
@@ -35,9 +15,6 @@ CREATE TABLE ondc_transactions (
     version BIGINT DEFAULT 0 NOT NULL,
     CONSTRAINT uq_transaction_message UNIQUE (transaction_id, message_id)
 );
-
-CREATE INDEX idx_ondc_txn_transaction_id ON ondc_transactions(transaction_id);
-CREATE INDEX idx_ondc_txn_action ON ondc_transactions(transaction_id, action);
 
 CREATE TABLE ondc_settlements (
     id UUID PRIMARY KEY,
@@ -57,8 +34,6 @@ CREATE TABLE ondc_settlements (
     CONSTRAINT uq_settlement_transaction UNIQUE (ondc_transaction_id, settlement_type)
 );
 
-CREATE INDEX idx_settlement_txn_id ON ondc_settlements(ondc_transaction_id);
-
 CREATE TABLE ondc_catalog_sync_logs (
     id UUID PRIMARY KEY,
     sync_id VARCHAR(255) NOT NULL UNIQUE,
@@ -69,7 +44,47 @@ CREATE TABLE ondc_catalog_sync_logs (
     completed_at TIMESTAMP
 );
 
+CREATE INDEX idx_ondc_txn_transaction_id ON ondc_transactions(transaction_id);
+
+CREATE INDEX idx_ondc_txn_action ON ondc_transactions(transaction_id, action);
+
+CREATE INDEX idx_settlement_txn_id ON ondc_settlements(ondc_transaction_id);
+
+CREATE INDEX idx_ondc_catalog_sync_log_outlet_id ON ondc_catalog_sync_log(outlet_id);
+
+-- ONDC Integration Service Schema
+
+CREATE TABLE ondc_network_participants (
+    id UUID PRIMARY KEY,
+    subscriber_id VARCHAR(255) NOT NULL UNIQUE,
+    subscriber_url VARCHAR(512) NOT NULL,
+    domain VARCHAR(100) NOT NULL,
+    city VARCHAR(100) NOT NULL,
+    country VARCHAR(10) NOT NULL,
+    type VARCHAR(20) NOT NULL,
+    msn INTEGER DEFAULT 0 NOT NULL,
+    status VARCHAR(20) NOT NULL,
+    signing_public_key VARCHAR(1024),
+    encryption_public_key VARCHAR(1024),
+    valid_from TIMESTAMP,
+    valid_until TIMESTAMP,
+    ops_no INTEGER,
+    unique_key_id VARCHAR(255) NOT NULL,
+    version BIGINT DEFAULT 0 NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL
+);
+
 -- Outbox events table for the Transactional Outbox Pattern (CommonLibrary OutboxEventPoller)
 
-
+CREATE TABLE ondc_catalog_sync_log (
+    id UUID PRIMARY KEY,
+    outlet_id UUID NOT NULL,
+    sync_type VARCHAR(255) NOT NULL,
+    items_synced INTEGER,
+    status VARCHAR(255) NOT NULL,
+    error_details VARCHAR(255),
+    triggered_by VARCHAR(255),
+    created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
 

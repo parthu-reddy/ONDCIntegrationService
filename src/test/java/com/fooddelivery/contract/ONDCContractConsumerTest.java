@@ -25,7 +25,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @ActiveProfiles("contract-test")
-@SpringBootTest(classes = ONDCContractConsumerTest.TestConfig.class, webEnvironment = SpringBootTest.WebEnvironment.NONE)
+@SpringBootTest(classes = ONDCContractConsumerTest.TestConfig.class, webEnvironment = SpringBootTest.WebEnvironment.NONE, properties = {
+    // Stub ids are Maven artifactIds; Feign resolves by spring.application.name. These two
+    // differ for these services, so the stub must be registered under the name the client asks for.
+    "stubrunner.idsToServiceIds.restaurant-application=restaurant-service",
+    "stubrunner.idsToServiceIds.delivery-executive-application=delivery-service"
+})
 @AutoConfigureStubRunner(ids = { "com.fooddelivery:restaurant-application:+:stubs:8091", "com.fooddelivery:delivery-executive-application:+:stubs:8092" }, stubsMode = StubRunnerProperties.StubsMode.LOCAL)
 public class ONDCContractConsumerTest {
 
@@ -41,22 +46,14 @@ public class ONDCContractConsumerTest {
     }
 
     @Autowired
-    private DeliveryServiceClient deliveryServiceClient;
-    @Autowired
     private RestaurantServiceClient restaurantServiceClient;
-    @Autowired
-    private CustomerServiceClient customerServiceClient;
-    @Autowired
-    private LedgerServiceClient ledgerServiceClient;
 
     @Test
     public void shouldFetchRestaurantOutlets() {
-        // We know restaurant stub has getOwnerOutlets or sample
-        // Wait, did we write specific contracts for ONDC?
-        // Let's just do a basic context loads for now until we define exact payloads.
-        assertNotNull(restaurantServiceClient);
-        assertNotNull(deliveryServiceClient);
-        assertNotNull(customerServiceClient);
-        assertNotNull(ledgerServiceClient);
+        Map<String, Object> response = restaurantServiceClient.getServiceableRestaurants(12.9716, 77.5946, 5.0);
+        
+        assertNotNull(response);
+        assertEquals(Boolean.TRUE, response.get("success"));
+        assertNotNull(response.get("data"));
     }
 }
