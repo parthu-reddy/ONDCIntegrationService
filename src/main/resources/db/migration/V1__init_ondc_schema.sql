@@ -50,7 +50,6 @@ CREATE INDEX idx_ondc_txn_action ON ondc_transactions(transaction_id, action);
 
 CREATE INDEX idx_settlement_txn_id ON ondc_settlements(ondc_transaction_id);
 
-CREATE INDEX idx_ondc_catalog_sync_log_outlet_id ON ondc_catalog_sync_log(outlet_id);
 
 -- ONDC Integration Service Schema
 
@@ -87,4 +86,6 @@ CREATE TABLE ondc_catalog_sync_log (
     triggered_by VARCHAR(255),
     created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
+
+CREATE INDEX idx_ondc_catalog_sync_log_outlet_id ON ondc_catalog_sync_log(outlet_id);
 
