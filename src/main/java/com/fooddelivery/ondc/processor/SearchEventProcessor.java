@@ -33,7 +33,7 @@ public class SearchEventProcessor {
     }
 
     @RetryableTopic(attempts = "5", backoff = @Backoff(delay = 1000, multiplier = 2.0), autoCreateTopics = "true", dltStrategy = DltStrategy.FAIL_ON_ERROR)
-    @KafkaListener(topics = OndcKafkaConfig.TOPIC_ONDC_SEARCH_REQUEST, groupId = "ondc-integration-group")
+    @KafkaListener(topics = OndcKafkaConfig.TOPIC_ONDC_SEARCH_REQUEST, groupId = "ondc-integration-group-searcheventprocessor")
     public void handleSearchRequest(String eventJson, @org.springframework.messaging.handler.annotation.Headers java.util.Map<String, Object> headers) {
         log.info("Received internal search request: {}", eventJson);
         try {
