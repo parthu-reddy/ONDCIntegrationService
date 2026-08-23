@@ -1,1 +1,902 @@
-{"openapi":"3.0.1","info":{"title":"OpenAPI definition","version":"v0"},"servers":[{"url":"http://localhost:8098/ondc","description":"Generated server url"}],"paths":{"/update":{"post":{"tags":["bpp-update-controller"],"operationId":"update","requestBody":{"content":{"application/json":{"schema":{"$ref":"#/components/schemas/OndcRequest"}}},"required":true},"responses":{"200":{"description":"OK","content":{"*/*":{"schema":{"$ref":"#/components/schemas/OndcAckResponse"}}}}}}},"/track":{"post":{"tags":["bpp-track-controller"],"operationId":"track","requestBody":{"content":{"application/json":{"schema":{"$ref":"#/components/schemas/OndcRequest"}}},"required":true},"responses":{"200":{"description":"OK","content":{"*/*":{"schema":{"$ref":"#/components/schemas/OndcAckResponse"}}}}}}},"/status":{"post":{"tags":["bpp-status-controller"],"operationId":"status","requestBody":{"content":{"application/json":{"schema":{"$ref":"#/components/schemas/OndcRequest"}}},"required":true},"responses":{"200":{"description":"OK","content":{"*/*":{"schema":{"$ref":"#/components/schemas/OndcAckResponse"}}}}}}},"/settle":{"post":{"tags":["settlement-controller"],"operationId":"settle","requestBody":{"content":{"application/json":{"schema":{"$ref":"#/components/schemas/OndcRequest"}}},"required":true},"responses":{"200":{"description":"OK","content":{"*/*":{"schema":{"$ref":"#/components/schemas/OndcAckResponse"}}}}}}},"/select":{"post":{"tags":["bpp-select-controller"],"operationId":"select","requestBody":{"content":{"application/json":{"schema":{"$ref":"#/components/schemas/OndcRequest"}}},"required":true},"responses":{"200":{"description":"OK","content":{"*/*":{"schema":{"$ref":"#/components/schemas/OndcAckResponse"}}}}}}},"/search_inc":{"post":{"tags":["bpp-search-inc-controller"],"operationId":"searchInc","requestBody":{"content":{"application/json":{"schema":{"$ref":"#/components/schemas/OndcRequest"}}},"required":true},"responses":{"200":{"description":"OK","content":{"*/*":{"schema":{"$ref":"#/components/schemas/OndcAckResponse"}}}}}}},"/search":{"post":{"tags":["bpp-search-controller"],"operationId":"search","requestBody":{"content":{"application/json":{"schema":{"$ref":"#/components/schemas/OndcRequest"}}},"required":true},"responses":{"200":{"description":"OK","content":{"*/*":{"schema":{"$ref":"#/components/schemas/OndcAckResponse"}}}}}}},"/recon":{"post":{"tags":["settlement-controller"],"operationId":"recon","requestBody":{"content":{"application/json":{"schema":{"$ref":"#/components/schemas/OndcRequest"}}},"required":true},"responses":{"200":{"description":"OK","content":{"*/*":{"schema":{"$ref":"#/components/schemas/OndcAckResponse"}}}}}}},"/receiver_recon":{"post":{"tags":["settlement-controller"],"operationId":"receiverRecon","requestBody":{"content":{"application/json":{"schema":{"$ref":"#/components/schemas/OndcRequest"}}},"required":true},"responses":{"200":{"description":"OK","content":{"*/*":{"schema":{"$ref":"#/components/schemas/OndcAckResponse"}}}}}}},"/rating":{"post":{"tags":["bpp-rating-controller"],"operationId":"rating","requestBody":{"content":{"application/json":{"schema":{"$ref":"#/components/schemas/OndcRequest"}}},"required":true},"responses":{"200":{"description":"OK","content":{"*/*":{"schema":{"$ref":"#/components/schemas/OndcAckResponse"}}}}}}},"/on_track":{"post":{"tags":["bap-on-track-controller"],"operationId":"onTrack","requestBody":{"content":{"application/json":{"schema":{"$ref":"#/components/schemas/OndcRequest"}}},"required":true},"responses":{"200":{"description":"OK","content":{"*/*":{"schema":{"$ref":"#/components/schemas/OndcAckResponse"}}}}}}},"/on_subscribe":{"post":{"tags":["on-subscribe-controller"],"operationId":"onSubscribe","requestBody":{"content":{"application/json":{"schema":{"type":"object","additionalProperties":{"type":"object"}}}},"required":true},"responses":{"200":{"description":"OK","content":{"*/*":{"schema":{"type":"object","additionalProperties":{"type":"string"}}}}}}}},"/on_status":{"post":{"tags":["bap-on-status-controller"],"operationId":"onStatus","requestBody":{"content":{"application/json":{"schema":{"$ref":"#/components/schemas/OndcRequest"}}},"required":true},"responses":{"200":{"description":"OK","content":{"*/*":{"schema":{"$ref":"#/components/schemas/OndcAckResponse"}}}}}}},"/on_settle":{"post":{"tags":["settlement-controller"],"operationId":"onSettle","requestBody":{"content":{"application/json":{"schema":{"$ref":"#/components/schemas/OndcRequest"}}},"required":true},"responses":{"200":{"description":"OK","content":{"*/*":{"schema":{"$ref":"#/components/schemas/OndcAckResponse"}}}}}}},"/on_select":{"post":{"tags":["bap-on-select-controller"],"operationId":"onSelect","requestBody":{"content":{"application/json":{"schema":{"$ref":"#/components/schemas/OndcRequest"}}},"required":true},"responses":{"200":{"description":"OK","content":{"*/*":{"schema":{"$ref":"#/components/schemas/OndcAckResponse"}}}}}}},"/on_search":{"post":{"tags":["bap-on-search-controller"],"operationId":"onSearch","requestBody":{"content":{"application/json":{"schema":{"$ref":"#/components/schemas/OndcRequest"}}},"required":true},"responses":{"200":{"description":"OK","content":{"*/*":{"schema":{"$ref":"#/components/schemas/OndcAckResponse"}}}}}}},"/on_recon":{"post":{"tags":["settlement-controller"],"operationId":"onRecon","requestBody":{"content":{"application/json":{"schema":{"$ref":"#/components/schemas/OndcRequest"}}},"required":true},"responses":{"200":{"description":"OK","content":{"*/*":{"schema":{"$ref":"#/components/schemas/OndcAckResponse"}}}}}}},"/on_receiver_recon":{"post":{"tags":["settlement-controller"],"operationId":"onReceiverRecon","requestBody":{"content":{"application/json":{"schema":{"$ref":"#/components/schemas/OndcRequest"}}},"required":true},"responses":{"200":{"description":"OK","content":{"*/*":{"schema":{"$ref":"#/components/schemas/OndcAckResponse"}}}}}}},"/on_init":{"post":{"tags":["bap-on-init-controller"],"operationId":"onInit","requestBody":{"content":{"application/json":{"schema":{"$ref":"#/components/schemas/OndcRequest"}}},"required":true},"responses":{"200":{"description":"OK","content":{"*/*":{"schema":{"$ref":"#/components/schemas/OndcAckResponse"}}}}}}},"/on_confirm":{"post":{"tags":["bap-on-confirm-controller"],"operationId":"onConfirm","requestBody":{"content":{"application/json":{"schema":{"$ref":"#/components/schemas/OndcRequest"}}},"required":true},"responses":{"200":{"description":"OK","content":{"*/*":{"schema":{"$ref":"#/components/schemas/OndcAckResponse"}}}}}}},"/on_cancel":{"post":{"tags":["bap-on-cancel-controller"],"operationId":"onCancel","requestBody":{"content":{"application/json":{"schema":{"$ref":"#/components/schemas/OndcRequest"}}},"required":true},"responses":{"200":{"description":"OK","content":{"*/*":{"schema":{"$ref":"#/components/schemas/OndcAckResponse"}}}}}}},"/init":{"post":{"tags":["bpp-init-controller"],"operationId":"init","requestBody":{"content":{"application/json":{"schema":{"$ref":"#/components/schemas/OndcRequest"}}},"required":true},"responses":{"200":{"description":"OK","content":{"*/*":{"schema":{"$ref":"#/components/schemas/OndcAckResponse"}}}}}}},"/confirm":{"post":{"tags":["bpp-confirm-controller"],"operationId":"confirm","requestBody":{"content":{"application/json":{"schema":{"$ref":"#/components/schemas/OndcRequest"}}},"required":true},"responses":{"200":{"description":"OK","content":{"*/*":{"schema":{"$ref":"#/components/schemas/OndcAckResponse"}}}}}}},"/cancel":{"post":{"tags":["bpp-cancel-controller"],"operationId":"cancel","requestBody":{"content":{"application/json":{"schema":{"$ref":"#/components/schemas/OndcRequest"}}},"required":true},"responses":{"200":{"description":"OK","content":{"*/*":{"schema":{"$ref":"#/components/schemas/OndcAckResponse"}}}}}}},"/ondc-site-verification.html":{"get":{"tags":["site-verification-controller"],"operationId":"getSiteVerificationHtml","responses":{"200":{"description":"OK","content":{"text/html":{"schema":{"type":"string"}}}}}}}},"components":{"schemas":{"OndcContext":{"type":"object","properties":{"domain":{"type":"string"},"action":{"type":"string"},"country":{"type":"string"},"city":{"type":"string"},"timestamp":{"type":"string"},"ttl":{"type":"string"},"core_version":{"type":"string"},"bap_id":{"type":"string"},"bap_uri":{"type":"string"},"bpp_id":{"type":"string"},"bpp_uri":{"type":"string"},"transaction_id":{"type":"string"},"message_id":{"type":"string"},"key":{"type":"string"}}},"OndcError":{"type":"object","properties":{"type":{"type":"string"},"code":{"type":"string"},"path":{"type":"string"},"message":{"type":"string"}}},"OndcMessage":{"type":"object","properties":{"intent":{"type":"object"},"order":{"type":"object"},"catalog":{"type":"object"},"tracking":{"type":"object"},"payment":{"type":"object"},"rating":{"type":"object"},"settlement":{"type":"object"},"order_id":{"type":"string"}}},"OndcRequest":{"type":"object","properties":{"context":{"$ref":"#/components/schemas/OndcContext"},"message":{"$ref":"#/components/schemas/OndcMessage"},"error":{"$ref":"#/components/schemas/OndcError"}}},"Ack":{"type":"object","properties":{"status":{"type":"string"}}},"Message":{"type":"object","properties":{"ack":{"$ref":"#/components/schemas/Ack"}}},"OndcAckResponse":{"type":"object","properties":{"context":{"$ref":"#/components/schemas/OndcContext"},"message":{"$ref":"#/components/schemas/Message"},"error":{"$ref":"#/components/schemas/OndcError"}}}}}}
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "OpenAPI definition",
+    "version": "v0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8098/ondc",
+      "description": "Generated server url"
+    }
+  ],
+  "paths": {
+    "/update": {
+      "post": {
+        "tags": [
+          "bpp-update-controller"
+        ],
+        "operationId": "update",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OndcRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OndcAckResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/track": {
+      "post": {
+        "tags": [
+          "bpp-track-controller"
+        ],
+        "operationId": "track",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OndcRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OndcAckResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/status": {
+      "post": {
+        "tags": [
+          "bpp-status-controller"
+        ],
+        "operationId": "status",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OndcRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OndcAckResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/settle": {
+      "post": {
+        "tags": [
+          "settlement-controller"
+        ],
+        "operationId": "settle",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OndcRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OndcAckResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/select": {
+      "post": {
+        "tags": [
+          "bpp-select-controller"
+        ],
+        "operationId": "select",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OndcRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OndcAckResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/search_inc": {
+      "post": {
+        "tags": [
+          "bpp-search-inc-controller"
+        ],
+        "operationId": "searchInc",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OndcRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OndcAckResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/search": {
+      "post": {
+        "tags": [
+          "bpp-search-controller"
+        ],
+        "operationId": "search",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OndcRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OndcAckResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/recon": {
+      "post": {
+        "tags": [
+          "settlement-controller"
+        ],
+        "operationId": "recon",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OndcRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OndcAckResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/receiver_recon": {
+      "post": {
+        "tags": [
+          "settlement-controller"
+        ],
+        "operationId": "receiverRecon",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OndcRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OndcAckResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/rating": {
+      "post": {
+        "tags": [
+          "bpp-rating-controller"
+        ],
+        "operationId": "rating",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OndcRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OndcAckResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/on_track": {
+      "post": {
+        "tags": [
+          "bap-on-track-controller"
+        ],
+        "operationId": "onTrack",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OndcRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OndcAckResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/on_subscribe": {
+      "post": {
+        "tags": [
+          "on-subscribe-controller"
+        ],
+        "operationId": "onSubscribe",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/on_status": {
+      "post": {
+        "tags": [
+          "bap-on-status-controller"
+        ],
+        "operationId": "onStatus",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OndcRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OndcAckResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/on_settle": {
+      "post": {
+        "tags": [
+          "settlement-controller"
+        ],
+        "operationId": "onSettle",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OndcRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OndcAckResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/on_select": {
+      "post": {
+        "tags": [
+          "bap-on-select-controller"
+        ],
+        "operationId": "onSelect",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OndcRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OndcAckResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/on_search": {
+      "post": {
+        "tags": [
+          "bap-on-search-controller"
+        ],
+        "operationId": "onSearch",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OndcRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OndcAckResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/on_recon": {
+      "post": {
+        "tags": [
+          "settlement-controller"
+        ],
+        "operationId": "onRecon",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OndcRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OndcAckResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/on_receiver_recon": {
+      "post": {
+        "tags": [
+          "settlement-controller"
+        ],
+        "operationId": "onReceiverRecon",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OndcRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OndcAckResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/on_init": {
+      "post": {
+        "tags": [
+          "bap-on-init-controller"
+        ],
+        "operationId": "onInit",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OndcRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OndcAckResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/on_confirm": {
+      "post": {
+        "tags": [
+          "bap-on-confirm-controller"
+        ],
+        "operationId": "onConfirm",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OndcRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OndcAckResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/on_cancel": {
+      "post": {
+        "tags": [
+          "bap-on-cancel-controller"
+        ],
+        "operationId": "onCancel",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OndcRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OndcAckResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/init": {
+      "post": {
+        "tags": [
+          "bpp-init-controller"
+        ],
+        "operationId": "init",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OndcRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OndcAckResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/confirm": {
+      "post": {
+        "tags": [
+          "bpp-confirm-controller"
+        ],
+        "operationId": "confirm",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OndcRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OndcAckResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/cancel": {
+      "post": {
+        "tags": [
+          "bpp-cancel-controller"
+        ],
+        "operationId": "cancel",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OndcRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OndcAckResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/ondc-site-verification.html": {
+      "get": {
+        "tags": [
+          "site-verification-controller"
+        ],
+        "operationId": "getSiteVerificationHtml",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/html": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "OndcContext": {
+        "type": "object",
+        "properties": {
+          "domain": {
+            "type": "string"
+          },
+          "action": {
+            "type": "string"
+          },
+          "country": {
+            "type": "string"
+          },
+          "city": {
+            "type": "string"
+          },
+          "timestamp": {
+            "type": "string"
+          },
+          "ttl": {
+            "type": "string"
+          },
+          "core_version": {
+            "type": "string"
+          },
+          "bap_id": {
+            "type": "string"
+          },
+          "bap_uri": {
+            "type": "string"
+          },
+          "bpp_id": {
+            "type": "string"
+          },
+          "bpp_uri": {
+            "type": "string"
+          },
+          "transaction_id": {
+            "type": "string"
+          },
+          "message_id": {
+            "type": "string"
+          },
+          "key": {
+            "type": "string"
+          }
+        }
+      },
+      "OndcError": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "code": {
+            "type": "string"
+          },
+          "path": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          }
+        }
+      },
+      "OndcMessage": {
+        "type": "object",
+        "properties": {
+          "intent": {
+            "type": "object"
+          },
+          "order": {
+            "type": "object"
+          },
+          "catalog": {
+            "type": "object"
+          },
+          "tracking": {
+            "type": "object"
+          },
+          "payment": {
+            "type": "object"
+          },
+          "rating": {
+            "type": "object"
+          },
+          "settlement": {
+            "type": "object"
+          },
+          "order_id": {
+            "type": "string"
+          }
+        }
+      },
+      "OndcRequest": {
+        "type": "object",
+        "properties": {
+          "context": {
+            "$ref": "#/components/schemas/OndcContext"
+          },
+          "message": {
+            "$ref": "#/components/schemas/OndcMessage"
+          },
+          "error": {
+            "$ref": "#/components/schemas/OndcError"
+          }
+        }
+      },
+      "Ack": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string"
+          }
+        }
+      },
+      "Message": {
+        "type": "object",
+        "properties": {
+          "ack": {
+            "$ref": "#/components/schemas/Ack"
+          }
+        }
+      },
+      "OndcAckResponse": {
+        "type": "object",
+        "properties": {
+          "context": {
+            "$ref": "#/components/schemas/OndcContext"
+          },
+          "message": {
+            "$ref": "#/components/schemas/Message"
+          },
+          "error": {
+            "$ref": "#/components/schemas/OndcError"
+          }
+        }
+      }
+    }
+  }
+}
