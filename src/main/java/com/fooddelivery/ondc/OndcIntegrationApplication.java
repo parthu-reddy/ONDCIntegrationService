@@ -21,7 +21,6 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 @EnableAsync
 @EnableScheduling
 @EnableConfigurationProperties(OndcProperties.class)
-@com.fooddelivery.common.outbox.config.EnableOutbox
 public class OndcIntegrationApplication {
 
     public static void main(String[] args) {
