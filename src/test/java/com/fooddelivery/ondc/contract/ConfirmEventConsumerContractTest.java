@@ -45,6 +45,7 @@ class ConfirmEventConsumerContractTest {
 
     @org.springframework.boot.SpringBootConfiguration
     @org.springframework.boot.autoconfigure.EnableAutoConfiguration
+    
     @Import(ConfirmEventProcessor.class)
     static class TestConfig {
         @Bean

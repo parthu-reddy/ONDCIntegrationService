@@ -23,22 +23,21 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.ReactiveRedisConnectionFactory;
 
-@SpringBootTest(classes = com.fooddelivery.ondc.OndcIntegrationApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, properties = {
+@SpringBootTest(classes = OpenApiGenerationTest.TestApp.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, properties = {
+    "spring.datasource.url=jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;MODE=PostgreSQL",
+    "spring.datasource.driver-class-name=org.h2.Driver",
+    "spring.datasource.username=sa",
+    "spring.datasource.password=sa",
+    "spring.jpa.database-platform=org.hibernate.dialect.H2Dialect",
+    "springdoc.writer-with-default-pretty-printer=true",
     "spring.cloud.config.enabled=false",
     "eureka.client.enabled=false",
     "spring.kafka.bootstrap-servers=localhost:9092",
-    "spring.flyway.enabled=false",
-    "spring.datasource.url=jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE",
-    "spring.datasource.driver-class-name=org.h2.Driver",
-    "spring.datasource.username=sa",
-    "spring.datasource.password=",
-    "spring.sql.init.mode=never",
+    "spring.flyway.enabled=false",    "spring.sql.init.mode=never",
     "spring.main.allow-bean-definition-overriding=true",
     "spring.jpa.hibernate.ddl-auto=none",
     "spring.redis.enabled=false",
-    "management.health.redis.enabled=false",
-    "spring.jpa.database-platform=org.hibernate.dialect.H2Dialect",
-    "jwt.secret=dummy",
+    "management.health.redis.enabled=false",    "jwt.secret=dummy",
     "jwt.expiration=3600000",
     "google.maps.api.key=dummy",
     "stripe.api.key=dummy",
@@ -77,18 +76,76 @@ import org.springframework.data.redis.connection.ReactiveRedisConnectionFactory;
     "vyapargateway.webhook.secret=dummy"
 })
 @ActiveProfiles("test")
-@AutoConfigureMockMvc
+@AutoConfigureMockMvc(addFilters = false)
 @AutoConfigureWebTestClient
 public class OpenApiGenerationTest {
+
+    @org.springframework.boot.test.mock.mockito.MockBean
+    private com.fooddelivery.ondc.repository.OndcTransactionRepository ondcTransactionRepository;
+
+
+    @org.springframework.boot.test.mock.mockito.MockBean
+    private com.fooddelivery.ondc.fulfillment.FulfillmentStateMachine fulfillmentStateMachine;
+
+
+    @org.springframework.boot.test.mock.mockito.MockBean
+    private com.fooddelivery.ondc.client.RestaurantServiceClient restaurantServiceClient;
+
+
+    @org.springframework.boot.test.mock.mockito.MockBean
+    private com.fooddelivery.ondc.util.OndcContextBuilder ondcContextBuilder;
+
+
+    @org.springframework.boot.test.mock.mockito.MockBean
+    private com.fooddelivery.ondc.crypto.Ed25519KeyManager ed25519KeyManager;
+
+
+    @org.springframework.boot.test.mock.mockito.MockBean
+    private org.springframework.web.client.RestTemplate restTemplate;
+
+
+    @org.springframework.boot.test.mock.mockito.MockBean
+    private com.fooddelivery.ondc.config.OndcProperties ondcProperties;
+
+
+    @org.springframework.boot.test.mock.mockito.MockBean
+    private com.fooddelivery.ondc.crypto.AesChallengeService aesChallengeService;
+
+
+    @org.springframework.boot.test.mock.mockito.MockBean
+    private com.fooddelivery.ondc.util.OndcSchemaValidator ondcSchemaValidator;
+
+
+    @org.springframework.boot.test.mock.mockito.MockBean
+    private com.fooddelivery.common.client.PaymentServiceClient paymentServiceClient;
+
+
+    @org.springframework.boot.test.mock.mockito.MockBean
+    private com.fooddelivery.ondc.client.LedgerServiceClient ledgerServiceClient;
+
+
+    @org.springframework.boot.test.mock.mockito.MockBean
+    private com.fooddelivery.ondc.repository.OndcSettlementRepository ondcSettlementRepository;
+
+    @org.springframework.boot.autoconfigure.SpringBootApplication(scanBasePackages = {"com.fooddelivery.ondc.settlement", "com.fooddelivery.ondc.beckn.inc", "com.fooddelivery.ondc.registry", "com.fooddelivery.ondc.beckn.callback", "com.fooddelivery.ondc.beckn.bpp"}, excludeName = {"org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration", "org.springframework.boot.actuate.autoconfigure.security.servlet.ManagementWebSecurityAutoConfiguration", "org.springframework.boot.autoconfigure.security.reactive.ReactiveSecurityAutoConfiguration", "org.springframework.boot.actuate.autoconfigure.security.reactive.ManagementReactiveSecurityAutoConfiguration", "org.springframework.boot.autoconfigure.security.oauth2.resource.servlet.OAuth2ResourceServerAutoConfiguration"})
+    static class TestApp {
+    }
+
+
+    @org.springframework.boot.test.mock.mockito.MockBean
+    private org.springframework.data.redis.core.RedisTemplate<String, Object> redisTemplate;
+
+    @org.springframework.boot.test.mock.mockito.MockBean(name = "kafkaTemplate")
+    private org.springframework.kafka.core.KafkaTemplate kafkaTemplate;
+
+    @org.springframework.boot.test.mock.mockito.MockBean
+    private org.springframework.data.redis.connection.ReactiveRedisConnectionFactory reactiveRedisConnectionFactory;
+
 
     // Mock critical infrastructure so the context loads
     
     @MockBean
-    private KafkaTemplate<?, ?> kafkaTemplate;
-    @MockBean
     private RedisConnectionFactory redisConnectionFactory;
-    @MockBean
-    private ReactiveRedisConnectionFactory reactiveRedisConnectionFactory;
     @MockBean
     private com.fooddelivery.common.service.RateLimitingService rateLimitingService;
 
@@ -122,7 +179,7 @@ public class OpenApiGenerationTest {
         }
 
         if (openApiJson != null && !openApiJson.isEmpty()) {
-            Path path = Paths.get("openapi.json");
+            Path path = Paths.get("target/openapi.json");
             if (path.getParent() != null) Files.createDirectories(path.getParent());
             Files.write(path, openApiJson.getBytes(StandardCharsets.UTF_8));
             System.out.println("OpenAPI spec written to target/openapi.json");
