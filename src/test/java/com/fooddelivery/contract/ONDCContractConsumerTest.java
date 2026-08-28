@@ -31,7 +31,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
     "stubrunner.idsToServiceIds.restaurant-application=restaurant-service",
     "stubrunner.idsToServiceIds.delivery-executive-application=delivery-service"
 })
-@AutoConfigureStubRunner(ids = { "com.fooddelivery:restaurant-application:+:stubs:8091", "com.fooddelivery:delivery-executive-application:+:stubs:8092" }, stubsMode = StubRunnerProperties.StubsMode.LOCAL)
+@AutoConfigureStubRunner(ids = { "com.fooddelivery:restaurant-application:+:stubs", "com.fooddelivery:delivery-executive-application:+:stubs" }, stubsMode = StubRunnerProperties.StubsMode.LOCAL)
 public class ONDCContractConsumerTest {
 
 
