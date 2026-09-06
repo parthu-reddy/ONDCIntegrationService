@@ -31,7 +31,17 @@ public class BapSearchService {
         OndcRequest request = new OndcRequest();
         request.setContext(context);
         com.fooddelivery.ondc.dto.OndcMessage ondcMsg = new com.fooddelivery.ondc.dto.OndcMessage();
-        ondcMsg.setIntent(java.util.Map.of("item", java.util.Map.of("descriptor", java.util.Map.of("name", searchKey)), "fulfillment", java.util.Map.of("type", "Delivery", "end", java.util.Map.of("location", java.util.Map.of("gps", gps)))));
+        ondcMsg.setIntent(com.fooddelivery.ondc.dto.OndcIntent.builder()
+                .item(com.fooddelivery.ondc.dto.OndcIntent.OndcItem.builder()
+                        .descriptor(com.fooddelivery.ondc.dto.OndcIntent.OndcDescriptor.builder().name(searchKey).build())
+                        .build())
+                .fulfillment(com.fooddelivery.ondc.dto.OndcIntent.OndcFulfillment.builder()
+                        .type("Delivery")
+                        .end(com.fooddelivery.ondc.dto.OndcIntent.OndcFulfillmentEnd.builder()
+                                .location(com.fooddelivery.ondc.dto.OndcIntent.OndcLocation.builder().gps(gps).build())
+                                .build())
+                        .build())
+                .build());
         request.setMessage(ondcMsg);
         String gatewayUrl = contextBuilder.getProperties().getRegistry().getGatewayUrl();
         String searchEndpoint = gatewayUrl + "/search";

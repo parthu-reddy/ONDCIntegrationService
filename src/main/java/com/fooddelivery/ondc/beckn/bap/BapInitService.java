@@ -14,7 +14,7 @@ public class BapInitService {
     private final RestTemplate ondcRestTemplate;
     private final com.fooddelivery.ondc.util.OndcContextBuilder contextBuilder;
 
-    public void init(String bppUri, String transactionId, Object initDetails) {
+    public void init(String bppUri, String transactionId, com.fooddelivery.ondc.dto.OndcOrder initDetails) {
         log.info("BAP sending /init to BPP: {}, transaction_id: {}", bppUri, transactionId);
         com.fooddelivery.ondc.dto.OndcContext context = contextBuilder.buildBapRequestContext("init", null, bppUri);
         context.setTransactionId(transactionId);

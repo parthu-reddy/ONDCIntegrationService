@@ -14,7 +14,7 @@ public class BapSelectService {
     private final RestTemplate ondcRestTemplate;
     private final com.fooddelivery.ondc.util.OndcContextBuilder contextBuilder;
 
-    public void select(String bppUri, String transactionId, Object selectDetails) {
+    public void select(String bppUri, String transactionId, com.fooddelivery.ondc.dto.OndcOrder selectDetails) {
         log.info("BAP sending /select to BPP: {}, transaction_id: {}", bppUri, transactionId);
         com.fooddelivery.ondc.dto.OndcContext context = contextBuilder.buildBapRequestContext("select", null, bppUri);
         context.setTransactionId(transactionId);

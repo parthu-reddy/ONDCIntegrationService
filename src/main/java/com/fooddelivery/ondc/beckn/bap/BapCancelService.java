@@ -18,7 +18,12 @@ public class BapCancelService {
         com.fooddelivery.ondc.dto.OndcRequest request = new com.fooddelivery.ondc.dto.OndcRequest();
         request.setContext(context);
         com.fooddelivery.ondc.dto.OndcMessage ondcMsg = new com.fooddelivery.ondc.dto.OndcMessage();
-        ondcMsg.setOrder(java.util.Map.of("id", orderId, "cancellation", java.util.Map.of("reason", java.util.Map.of("id", cancellationReasonId))));
+        ondcMsg.setOrder(com.fooddelivery.ondc.dto.OndcOrder.builder()
+                .id(orderId)
+                .cancellation(com.fooddelivery.ondc.dto.OndcOrder.OndcCancellation.builder()
+                        .reason(com.fooddelivery.ondc.dto.OndcOrder.OndcCancellationReason.builder().id(cancellationReasonId).build())
+                        .build())
+                .build());
         request.setMessage(ondcMsg);
         ondcRestTemplate.postForEntity(bppUri + "/cancel", request, String.class);
     }

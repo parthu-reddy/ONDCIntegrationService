@@ -68,9 +68,14 @@ public class ConfirmEventProcessor {
                 return;
             }
 
+            com.fooddelivery.ondc.dto.OndcOrder.OndcPaymentInfo paymentInfo = null;
+            if (ondcRequest.getMessage() != null && ondcRequest.getMessage().getOrder() != null) {
+                paymentInfo = ondcRequest.getMessage().getOrder().getPayment();
+            }
+
             // Assuming BapConfirmService needs transactionId and order payload to confirm
             if (transactionId != null && bppUri != null) {
-                bapConfirmService.confirm(bppUri, transactionId, request);
+                bapConfirmService.confirm(bppUri, transactionId, paymentInfo);
             } else {
                 log.warn("Invalid confirm request payload: missing transactionId or bppUri");
             }

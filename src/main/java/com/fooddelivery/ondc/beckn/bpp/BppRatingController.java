@@ -44,14 +44,10 @@ public class BppRatingController {
                 log.warn("Rating request missing order payload for transaction: {}", request.getContext().getTransactionId());
                 return;
             }
-            Object order = request.getMessage().getOrder();
-            if (order instanceof Map) {
-                @SuppressWarnings("unchecked")
-                Map<String, Object> orderMap = (Map<String, Object>) order;
-                Object ratingObj = orderMap.get("rating");
-                if (ratingObj != null) {
-                    log.info("Rating received for transaction {}: {}", request.getContext().getTransactionId(), ratingObj);
-                }
+            com.fooddelivery.ondc.dto.OndcOrder order = request.getMessage().getOrder();
+            Object ratingObj = order.getRating();
+            if (ratingObj != null) {
+                log.info("Rating received for transaction {}: {}", request.getContext().getTransactionId(), ratingObj);
             }
         } catch (
         // In full implementation: parse rating value, determine entity

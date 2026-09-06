@@ -32,15 +32,17 @@ public class SettlementController {
             try {
                 // Simplified extraction for wiring
                 if (request.getMessage() != null && request.getMessage().getSettlement() != null) {
-                    Map<String, Object> settlement = (Map<String, Object>) request.getMessage().getSettlement();
-                    List<Map<String, Object>> settlements = (List<Map<String, Object>>) settlement.get("settlements");
+                    com.fooddelivery.ondc.dto.OndcSettlement settlement = request.getMessage().getSettlement();
+                    java.util.List<com.fooddelivery.ondc.dto.OndcSettlement.SettlementEntry> settlements = settlement.getSettlements();
                     if (settlements != null && !settlements.isEmpty()) {
-                        for (Map<String, Object> s : settlements) {
-                            String type = (String) s.get("settlement_type");
-                            Map<String, Object> amountObj = (Map<String, Object>) s.get("amount");
-                            BigDecimal amount = new BigDecimal(String.valueOf(amountObj.get("value")));
-                            String currency = (String) amountObj.get("currency");
-                            settlementService.processSettlement(request.getContext().getTransactionId(), type, amount, currency);
+                        for (com.fooddelivery.ondc.dto.OndcSettlement.SettlementEntry s : settlements) {
+                            String type = s.getSettlementType();
+                            com.fooddelivery.ondc.dto.OndcSettlement.OndcAmount amountObj = s.getAmount();
+                            if (amountObj != null) {
+                                BigDecimal amount = new BigDecimal(amountObj.getValue());
+                                String currency = amountObj.getCurrency();
+                                settlementService.processSettlement(request.getContext().getTransactionId(), type, amount, currency);
+                            }
                         }
                     }
                 }
@@ -67,15 +69,12 @@ public class SettlementController {
         CompletableFuture.runAsync(() -> {
             try {
                 if (request.getMessage() != null && request.getMessage().getOrder() != null) {
-                    Object orderObj = request.getMessage().getOrder();
-                    if (orderObj instanceof Map) {
-                        Map<String, Object> orderMap = (Map<String, Object>) orderObj;
-                        List<Map<String, Object>> orders = (List<Map<String, Object>>) orderMap.get("orders");
-                        if (orders != null && !orders.isEmpty()) {
-                            List<Map<String, Object>> responses = reconciliationService.processReconciliation(orders);
-                            // In a real implementation, we would send these responses back via /on_recon
-                            log.info("Reconciliation processed. Computed {} responses.", responses.size());
-                        }
+                    com.fooddelivery.ondc.dto.OndcOrder orderObj = request.getMessage().getOrder();
+                    java.util.List<java.util.Map<String, Object>> orders = orderObj.getOrders();
+                    if (orders != null && !orders.isEmpty()) {
+                        List<Map<String, Object>> responses = reconciliationService.processReconciliation(orders);
+                        // In a real implementation, we would send these responses back via /on_recon
+                        log.info("Reconciliation processed. Computed {} responses.", responses.size());
                     }
                 }
             } catch (Exception e) {

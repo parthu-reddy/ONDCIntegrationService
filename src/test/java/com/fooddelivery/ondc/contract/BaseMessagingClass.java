@@ -98,11 +98,18 @@ public abstract class BaseMessagingClass {
 
         // Exactly the structure BapSearchService.search() builds.
         com.fooddelivery.ondc.dto.OndcMessage message = new com.fooddelivery.ondc.dto.OndcMessage();
-        message.setIntent(java.util.Map.of(
-                "item", java.util.Map.of("descriptor", java.util.Map.of("name", "biryani")),
-                "fulfillment", java.util.Map.of(
-                        "type", "Delivery",
-                        "end", java.util.Map.of("location", java.util.Map.of("gps", "12.971598,77.594562")))));
+        com.fooddelivery.ondc.dto.OndcIntent intent = com.fooddelivery.ondc.dto.OndcIntent.builder()
+                .item(com.fooddelivery.ondc.dto.OndcIntent.OndcItem.builder()
+                        .descriptor(com.fooddelivery.ondc.dto.OndcIntent.OndcDescriptor.builder().name("biryani").build())
+                        .build())
+                .fulfillment(com.fooddelivery.ondc.dto.OndcIntent.OndcFulfillment.builder()
+                        .type("Delivery")
+                        .end(com.fooddelivery.ondc.dto.OndcIntent.OndcFulfillmentEnd.builder()
+                                .location(com.fooddelivery.ondc.dto.OndcIntent.OndcLocation.builder().gps("12.971598,77.594562").build())
+                                .build())
+                        .build())
+                .build();
+        message.setIntent(intent);
 
         com.fooddelivery.ondc.dto.OndcRequest request = com.fooddelivery.ondc.dto.OndcRequest.builder()
                 .context(context)

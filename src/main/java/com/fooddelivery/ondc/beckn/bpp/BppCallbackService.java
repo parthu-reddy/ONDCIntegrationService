@@ -1,9 +1,7 @@
 package com.fooddelivery.ondc.beckn.bpp;
 
 import com.fooddelivery.ondc.client.RestaurantServiceClient;
-import com.fooddelivery.ondc.dto.OndcContext;
-import com.fooddelivery.ondc.dto.OndcMessage;
-import com.fooddelivery.ondc.dto.OndcRequest;
+import com.fooddelivery.ondc.dto.*;
 import com.fooddelivery.ondc.fulfillment.FulfillmentStateMachine;
 import com.fooddelivery.ondc.fulfillment.OndcFulfillmentState;
 import com.fooddelivery.ondc.util.OndcContextBuilder;
@@ -42,8 +40,8 @@ public class BppCallbackService {
         log.info("Processing async /on_select for transaction: {}", request.getContext().getTransactionId());
         try {
             // Extract selected items from request for quote computation
-            Object selectedItems = request.getMessage() != null ? request.getMessage().getOrder() : null;
-            if (selectedItems == null) {
+            OndcOrder selectedOrder = request.getMessage() != null ? request.getMessage().getOrder() : null;
+            if (selectedOrder == null) {
                 throw new IllegalStateException("Select request missing order/items payload");
             }
             // In a full implementation, this would:
@@ -52,7 +50,10 @@ public class BppCallbackService {
             // 3. Compute taxes, packaging charges, delivery fees
             // 4. Build the ONDC-compliant quote breakdown
             // For now, we pass the selected items through for callback assembly
-            Map<String, Object> onSelectPayload = Map.of("provider", Map.of("id", extractProviderId(request)), "items", selectedItems);
+            OndcOrder onSelectPayload = OndcOrder.builder()
+                    .provider(OndcOrder.OndcProvider.builder().id(extractProviderId(request)).build())
+                    .items(selectedOrder.getItems())
+                    .build();
             sendCallbackWithRetry("on_select", request.getContext(), onSelectPayload);
         } catch (Exception e) {
             log.error("Failed to process /on_select for transaction: {}", request.getContext().getTransactionId(), e);
@@ -68,12 +69,21 @@ public class BppCallbackService {
     public void processInitAsync(OndcRequest request) {
         log.info("Processing async /on_init for transaction: {}", request.getContext().getTransactionId());
         try {
-            Object orderPayload = request.getMessage() != null ? request.getMessage().getOrder() : null;
+            OndcOrder orderPayload = request.getMessage() != null ? request.getMessage().getOrder() : null;
             if (orderPayload == null) {
                 throw new IllegalStateException("Init request missing order payload");
             }
             // Build on_init response with locked quote and payment details
-            Map<String, Object> onInitPayload = Map.of("provider", Map.of("id", extractProviderId(request)), "payment", Map.of("type", "ON-ORDER", "status", "NOT-PAID", "@ondc/org/settlement_details", Map.of("settlement_counterparty", "seller-app", "settlement_type", "neft")));
+            OndcOrder onInitPayload = OndcOrder.builder()
+                    .provider(OndcOrder.OndcProvider.builder().id(extractProviderId(request)).build())
+                    .payment(OndcOrder.OndcPaymentInfo.builder()
+                            .type("ON-ORDER")
+                            .status("NOT-PAID")
+                            .settlementDetails(Map.of(
+                                    "settlement_counterparty", "seller-app",
+                                    "settlement_type", "neft"))
+                            .build())
+                    .build();
             sendCallbackWithRetry("on_init", request.getContext(), onInitPayload);
         } catch (Exception e) {
             log.error("Failed to process /on_init for transaction: {}", request.getContext().getTransactionId(), e);
@@ -90,7 +100,10 @@ public class BppCallbackService {
         log.info("Processing async /on_confirm for transaction: {}", request.getContext().getTransactionId());
         try {
             String providerId = extractProviderId(request);
-            Map<String, Object> onConfirmPayload = Map.of("state", "Accepted", "provider", Map.of("id", providerId));
+            OndcOrder onConfirmPayload = OndcOrder.builder()
+                    .state("Accepted")
+                    .provider(OndcOrder.OndcProvider.builder().id(providerId).build())
+                    .build();
             // Transition fulfillment state
             fulfillmentStateMachine.transition(request.getContext().getTransactionId(), OndcFulfillmentState.PENDING);
             sendCallbackWithRetry("on_confirm", request.getContext(), onConfirmPayload);
@@ -107,7 +120,13 @@ public class BppCallbackService {
     public void processCancelAsync(OndcRequest request) {
         log.info("Processing async /on_cancel for transaction: {}", request.getContext().getTransactionId());
         try {
-            Map<String, Object> onCancelPayload = Map.of("state", "Cancelled", "cancellation", Map.of("cancelled_by", request.getContext().getBapId(), "reason", Map.of("id", "001")));
+            OndcOrder onCancelPayload = OndcOrder.builder()
+                    .state("Cancelled")
+                    .cancellation(OndcOrder.OndcCancellation.builder()
+                            .cancelledBy(request.getContext().getBapId())
+                            .reason(OndcOrder.OndcCancellationReason.builder().id("001").build())
+                            .build())
+                    .build();
             sendCallbackWithRetry("on_cancel", request.getContext(), onCancelPayload);
         } catch (Exception e) {
             log.error("Failed to process /on_cancel for transaction: {}", request.getContext().getTransactionId(), e);
@@ -123,7 +142,15 @@ public class BppCallbackService {
         log.info("Processing async /on_status for transaction: {}", request.getContext().getTransactionId());
         try {
             OndcFulfillmentState currentState = fulfillmentStateMachine.getCurrentState(request.getContext().getTransactionId());
-            Map<String, Object> onStatusPayload = Map.of("fulfillment", Map.of("state", Map.of("descriptor", Map.of("code", currentState.getOndcValue()))));
+            OndcOrder onStatusPayload = OndcOrder.builder()
+                    .fulfillment(OndcOrder.OndcOrderFulfillment.builder()
+                            .state(OndcOrder.OndcFulfillmentState.builder()
+                                    .descriptor(OndcOrder.OndcStateDescriptor.builder()
+                                            .code(currentState.getOndcValue())
+                                            .build())
+                                    .build())
+                            .build())
+                    .build();
             sendCallbackWithRetry("on_status", request.getContext(), onStatusPayload);
         } catch (Exception e) {
             log.error("Failed to process /on_status for transaction: {}", request.getContext().getTransactionId(), e);
@@ -139,8 +166,11 @@ public class BppCallbackService {
         log.info("Processing async /on_track for transaction: {}", request.getContext().getTransactionId());
         try {
             String trackingUrl = contextBuilder.getProperties().getSubscriberUrl() + "/tracking/" + request.getContext().getTransactionId();
-            Map<String, Object> onTrackPayload = Map.of("tracking", Map.of("url", trackingUrl, "status", "active"));
-            sendCallbackWithRetry("on_track", request.getContext(), onTrackPayload);
+            OndcOrder onTrackPayload = OndcOrder.builder().build();
+            OndcMessage msg = new OndcMessage();
+            msg.setOrder(onTrackPayload);
+            msg.setTracking(OndcTracking.builder().url(trackingUrl).status("active").build());
+            sendCallbackWithRetryMessage("on_track", request.getContext(), msg);
         } catch (Exception e) {
             log.error("Failed to process /on_track for transaction: {}", request.getContext().getTransactionId(), e);
             publishToDlq("on_track", request.getContext().getTransactionId(), e.getMessage());
@@ -154,8 +184,10 @@ public class BppCallbackService {
     public void processUpdateAsync(OndcRequest request) {
         log.info("Processing async /on_update for transaction: {}", request.getContext().getTransactionId());
         try {
-            Object orderPayload = request.getMessage() != null ? request.getMessage().getOrder() : null;
-            Map<String, Object> onUpdatePayload = Map.of("state", "Updated", "order", orderPayload != null ? orderPayload : Map.of());
+            OndcOrder orderPayload = request.getMessage() != null ? request.getMessage().getOrder() : null;
+            OndcOrder onUpdatePayload = OndcOrder.builder()
+                    .state("Updated")
+                    .build();
             sendCallbackWithRetry("on_update", request.getContext(), onUpdatePayload);
         } catch (Exception e) {
             log.error("Failed to process /on_update for transaction: {}", request.getContext().getTransactionId(), e);
@@ -164,17 +196,26 @@ public class BppCallbackService {
     }
 
     /**
-     * Generic callback sender with Resilience4j retry.
+     * Generic callback sender with Resilience4j retry — sets order on a new message.
      * On final failure, publishes to DLQ.
      */
     @Retry(name = "ondcCallback", fallbackMethod = "callbackFallback")
-    public void sendCallbackWithRetry(String action, OndcContext incomingContext, Object payload) {
+    public void sendCallbackWithRetry(String action, OndcContext incomingContext, OndcOrder orderPayload) {
+        OndcMessage msg = new OndcMessage();
+        msg.setOrder(orderPayload);
+        sendCallbackWithRetryMessage(action, incomingContext, msg);
+    }
+
+    /**
+     * Sends a pre-built OndcMessage as a callback — used when the message
+     * requires more than just the order field (e.g. tracking).
+     */
+    @Retry(name = "ondcCallback", fallbackMethod = "callbackMessageFallback")
+    public void sendCallbackWithRetryMessage(String action, OndcContext incomingContext, OndcMessage msg) {
         log.info("Sending {} callback to BAP: {}", action, incomingContext.getBapUri());
         OndcContext responseContext = contextBuilder.buildBppResponseContext(incomingContext, action);
         OndcRequest request = new OndcRequest();
         request.setContext(responseContext);
-        OndcMessage msg = new OndcMessage();
-        msg.setOrder(payload);
         request.setMessage(msg);
         String callbackUrl = incomingContext.getBapUri() + "/" + action;
         log.debug("Sending payload to: {}", callbackUrl);
@@ -186,7 +227,13 @@ public class BppCallbackService {
      * Resilience4j fallback — publishes failed callback to DLQ.
      */
     @SuppressWarnings("unused")
-    private void callbackFallback(String action, OndcContext incomingContext, Object payload, Throwable t) {
+    private void callbackFallback(String action, OndcContext incomingContext, OndcOrder orderPayload, Throwable t) {
+        log.error("All retries exhausted for {} callback to {}. Publishing to DLQ.", action, incomingContext.getBapUri(), t);
+        publishToDlq(action, incomingContext.getTransactionId(), t.getMessage());
+    }
+
+    @SuppressWarnings("unused")
+    private void callbackMessageFallback(String action, OndcContext incomingContext, OndcMessage msg, Throwable t) {
         log.error("All retries exhausted for {} callback to {}. Publishing to DLQ.", action, incomingContext.getBapUri(), t);
         publishToDlq(action, incomingContext.getTransactionId(), t.getMessage());
     }
@@ -221,19 +268,9 @@ public class BppCallbackService {
         if (request.getMessage() == null || request.getMessage().getOrder() == null) {
             throw new IllegalStateException("Request missing message/order payload — cannot extract provider ID");
         }
-        Object order = request.getMessage().getOrder();
-        if (order instanceof Map) {
-            @SuppressWarnings("unchecked")
-            Map<String, Object> orderMap = (Map<String, Object>) order;
-            Object provider = orderMap.get("provider");
-            if (provider instanceof Map) {
-                @SuppressWarnings("unchecked")
-                Map<String, Object> providerMap = (Map<String, Object>) provider;
-                String id = (String) providerMap.get("id");
-                if (id != null && !id.isBlank()) {
-                    return id;
-                }
-            }
+        OndcOrder order = request.getMessage().getOrder();
+        if (order.getProvider() != null && order.getProvider().getId() != null && !order.getProvider().getId().isBlank()) {
+            return order.getProvider().getId();
         }
         // Use BPP ID as fallback since we are the provider
         String bppId = request.getContext().getBppId();

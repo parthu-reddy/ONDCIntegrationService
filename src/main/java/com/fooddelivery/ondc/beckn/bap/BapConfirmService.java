@@ -14,14 +14,14 @@ public class BapConfirmService {
     private final RestTemplate ondcRestTemplate;
     private final com.fooddelivery.ondc.util.OndcContextBuilder contextBuilder;
 
-    public void confirm(String bppUri, String transactionId, Object paymentDetails) {
+    public void confirm(String bppUri, String transactionId, com.fooddelivery.ondc.dto.OndcOrder.OndcPaymentInfo paymentDetails) {
         log.info("BAP sending /confirm to BPP: {}, transaction_id: {}", bppUri, transactionId);
         com.fooddelivery.ondc.dto.OndcContext context = contextBuilder.buildBapRequestContext("confirm", null, bppUri);
         context.setTransactionId(transactionId);
         com.fooddelivery.ondc.dto.OndcRequest request = new com.fooddelivery.ondc.dto.OndcRequest();
         request.setContext(context);
         com.fooddelivery.ondc.dto.OndcMessage ondcMsg = new com.fooddelivery.ondc.dto.OndcMessage();
-        ondcMsg.setOrder(java.util.Map.of("payment", paymentDetails));
+        ondcMsg.setOrder(com.fooddelivery.ondc.dto.OndcOrder.builder().payment(paymentDetails).build());
         request.setMessage(ondcMsg);
         ondcRestTemplate.postForEntity(bppUri + "/confirm", request, String.class);
     }
