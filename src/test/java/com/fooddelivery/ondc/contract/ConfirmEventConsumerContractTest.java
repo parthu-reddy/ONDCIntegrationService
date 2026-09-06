@@ -40,6 +40,7 @@ import static org.mockito.Mockito.verify;
 @ActiveProfiles("contract-test")
 @AutoConfigureStubRunner(ids = "com.fooddelivery:ondc-integration-service:+:stubs",
         stubsMode = StubRunnerProperties.StubsMode.LOCAL)
+@org.springframework.test.annotation.DirtiesContext(classMode = org.springframework.test.annotation.DirtiesContext.ClassMode.BEFORE_CLASS)
 @EmbeddedKafka(partitions = 1, topics = {"ondc.order.created"})
 class ConfirmEventConsumerContractTest {
 
