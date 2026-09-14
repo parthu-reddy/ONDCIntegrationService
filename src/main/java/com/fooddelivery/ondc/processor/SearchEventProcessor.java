@@ -27,7 +27,10 @@ public class SearchEventProcessor {
     private final BapSearchService bapSearchService;
     private final IIdempotencyKeyRepository idempotencyKeyRepository;
 
-    public SearchEventProcessor(BapSearchService bapSearchService, IIdempotencyKeyRepository idempotencyKeyRepository) {
+        private final com.fooddelivery.common.event.EventBinder eventBinder;
+
+public SearchEventProcessor(BapSearchService bapSearchService, IIdempotencyKeyRepository idempotencyKeyRepository, com.fooddelivery.common.event.EventBinder eventBinder) {
+        this.eventBinder = eventBinder;
         this.bapSearchService = bapSearchService;
         this.idempotencyKeyRepository = idempotencyKeyRepository;
     }
@@ -59,7 +62,7 @@ public class SearchEventProcessor {
             // Reading them from the ROOT (as before) always yielded null, so every inbound search
             // was rejected by the guard below and no catalogue was ever returned.
             com.fasterxml.jackson.databind.JsonNode intent =
-                    mapper.readTree(eventJson).path("message").path("intent");
+                    eventBinder.getPayloadNode(eventJson).path("message").path("intent");
             String gps = intent.path("fulfillment").path("end").path("location").path("gps").asText(null);
             String searchKey = intent.path("item").path("descriptor").path("name").asText(null);
             

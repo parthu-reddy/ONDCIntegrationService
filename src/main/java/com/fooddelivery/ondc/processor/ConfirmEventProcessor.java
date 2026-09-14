@@ -27,28 +27,25 @@ public class ConfirmEventProcessor {
     private final BapConfirmService bapConfirmService;
     private final IIdempotencyKeyRepository idempotencyKeyRepository;
 
-    public ConfirmEventProcessor(BapConfirmService bapConfirmService, IIdempotencyKeyRepository idempotencyKeyRepository) {
+        private final com.fooddelivery.common.event.EventBinder eventBinder;
+
+public ConfirmEventProcessor(BapConfirmService bapConfirmService, IIdempotencyKeyRepository idempotencyKeyRepository, com.fooddelivery.common.event.EventBinder eventBinder) {
+        this.eventBinder = eventBinder;
         this.bapConfirmService = bapConfirmService;
         this.idempotencyKeyRepository = idempotencyKeyRepository;
     }
 
-    @RetryableTopic(attempts = "5", backoff = @Backoff(delay = 1000, multiplier = 2.0), autoCreateTopics = "true", dltStrategy = DltStrategy.FAIL_ON_ERROR)
+    @RetryableTopic(attempts = "5", backoff = @Backoff(delay = 1000, multiplier = 2.0), autoCreateTopics = "true", dltStrategy = DltStrategy.FAIL_ON_ERROR, exclude = {com.fooddelivery.common.event.EventBindingException.class}, traversingCauses = "true")
     @KafkaListener(topics = OndcKafkaConfig.TOPIC_ONDC_ORDER_CREATED, groupId = "ondc-integration-group-confirmeventprocessor")
     public void handleOrderCreated(String eventJson, @org.springframework.messaging.handler.annotation.Headers java.util.Map<String, Object> headers) {
         log.info("Received internal order created event: {}", eventJson);
         try {
-            com.fasterxml.jackson.databind.ObjectMapper mapper = new com.fasterxml.jackson.databind.ObjectMapper()
-                    .configure(com.fasterxml.jackson.databind.DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-            Map<String, Object> request = mapper.readValue(eventJson, new com.fasterxml.jackson.core.type.TypeReference<>() {
-            });
-
             // BppConfirmController publishes a serialized OndcRequest -- the Beckn envelope
             // {context, message} -- and OndcContext maps its fields to snake_case via @JsonProperty.
             // Reading transactionId/bppUri from the ROOT in camelCase always yielded null, so
             // BapConfirmService.confirm was never invoked and no on_confirm callback ever reached
             // the buyer app. Bind to the DTOs so the @JsonProperty mappings are applied.
-            com.fooddelivery.ondc.dto.OndcRequest ondcRequest =
-                    mapper.readValue(eventJson, com.fooddelivery.ondc.dto.OndcRequest.class);
+            com.fooddelivery.ondc.dto.OndcRequest ondcRequest = eventBinder.bind(eventJson, com.fooddelivery.ondc.dto.OndcRequest.class);
             com.fooddelivery.ondc.dto.OndcContext context = ondcRequest.getContext();
             String transactionId = context != null ? context.getTransactionId() : null;
             String bppUri = context != null ? context.getBppUri() : null;

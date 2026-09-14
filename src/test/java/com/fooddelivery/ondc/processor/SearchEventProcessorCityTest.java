@@ -33,7 +33,9 @@ class SearchEventProcessorCityTest {
     void setUp() {
         bapSearchService = Mockito.mock(BapSearchService.class);
         IIdempotencyKeyRepository idempotencyKeyRepository = Mockito.mock(IIdempotencyKeyRepository.class);
-        processor = new SearchEventProcessor(bapSearchService, idempotencyKeyRepository);
+        processor = new SearchEventProcessor(bapSearchService, idempotencyKeyRepository,
+                new com.fooddelivery.common.event.EventBinder(new com.fasterxml.jackson.databind.ObjectMapper(),
+                        jakarta.validation.Validation.buildDefaultValidatorFactory().getValidator()));
     }
 
     /** The Beckn envelope the producer really emits: everything nested, nothing at the root. */
