@@ -22,6 +22,6 @@ public interface LedgerServiceClient {
     @PostMapping("/api/v1/ledger/entries")
     Map<String, Object> createLedgerEntry(@RequestBody Map<String, Object> ledgerEntry);
 
-    @GetMapping("/api/v1/ledger/orders/{orderId}/total")
+    @GetMapping("/api/v1/internal/ledger/orders/{orderId}/total")
     BigDecimal getOrderLedgerAmount(@PathVariable("orderId") String orderId);
 }
