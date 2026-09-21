@@ -17,7 +17,7 @@ public class CatalogValidationService {
      */
     public void validateFssai(String fssai) {
         if (fssai == null || !fssai.matches("\\d{14}")) {
-            throw new OndcCatalogException("Invalid FSSAI license: \'" + fssai + "\'. Must be exactly 14 digits.");
+            throw new OndcCatalogException("Invalid FSSAI license: '" + fssai + "'. Must be exactly 14 digits.");
         }
     }
 
@@ -26,7 +26,7 @@ public class CatalogValidationService {
      */
     public void validateGstin(String gstin) {
         if (gstin == null || !gstin.matches("\\d{2}[A-Z]{5}\\d{4}[A-Z]\\d[Z][A-Z\\d]")) {
-            throw new OndcCatalogException("Invalid GSTIN format: \'" + gstin + "\'.");
+            throw new OndcCatalogException("Invalid GSTIN format: '" + gstin + "'.");
         }
     }
 }

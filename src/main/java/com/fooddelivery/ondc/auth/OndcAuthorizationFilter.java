@@ -63,7 +63,7 @@ public class OndcAuthorizationFilter extends OncePerRequestFilter {
             log.error("ONDC signature verification failed for {}: {}", uri, e.getMessage());
             response.setStatus(HttpStatus.UNAUTHORIZED.value());
             response.setContentType("application/json");
-            response.getWriter().write("{\"message\":{\"ack\":{\"status\":\"NACK\"}}," + "\"error\":{\"type\":\"CONTEXT-ERROR\",\"code\":\"10001\"," + "\"message\":\"" + e.getMessage().replace("\"", "\'") + "\"}}");
+            response.getWriter().write("{\"message\":{\"ack\":{\"status\":\"NACK\"}}," + "\"error\":{\"type\":\"CONTEXT-ERROR\",\"code\":\"10001\"," + "\"message\":\"" + e.getMessage().replace("\"", "'") + "\"}}");
         }
     }
 

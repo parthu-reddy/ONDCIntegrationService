@@ -28,7 +28,7 @@ public class OnSubscribeController {
         log.info("Received /on_subscribe callback from ONDC registry");
         String challenge = (String) payload.get("challenge");
         if (challenge == null || challenge.isBlank()) {
-            log.error("/on_subscribe payload missing \'challenge\' field: {}", payload);
+            log.error("/on_subscribe payload missing 'challenge' field: {}", payload);
             return ResponseEntity.badRequest().body(Map.of("answer", "", "error", "Missing challenge"));
         }
         try {

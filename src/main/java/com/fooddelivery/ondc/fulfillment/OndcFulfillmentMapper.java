@@ -31,7 +31,7 @@ public class OndcFulfillmentMapper {
             case "DELIVERED", "ORDER_DELIVERED" -> OndcFulfillmentState.ORDER_DELIVERED;
             case "CANCELLED", "ORDER_CANCELLED", "ORDER_CANCELLED_BY_ADMIN" -> OndcFulfillmentState.CANCELLED;
             default -> {
-                throw new IllegalArgumentException("Unknown internal status: \'" + internalStatus + "\'. Cannot safely map to ONDC state.");
+                throw new IllegalArgumentException("Unknown internal status: '" + internalStatus + "'. Cannot safely map to ONDC state.");
             }
         };
     }
