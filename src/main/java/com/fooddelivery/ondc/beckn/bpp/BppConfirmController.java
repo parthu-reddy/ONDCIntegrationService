@@ -41,6 +41,7 @@ public class BppConfirmController {
         log.info("Received /confirm from BAP: {}, transaction_id: {}", request.getContext().getBapId(), request.getContext().getTransactionId());
         schemaValidator.validateRequest(request);
         schemaValidator.validateOrderContext(request.getContext());
+        schemaValidator.validatePrepaid(request, true);
         // Idempotency check — prevent duplicate order creation
         boolean alreadyConfirmed = transactionRepository.existsByTransactionIdAndMessageId(request.getContext().getTransactionId(), request.getContext().getMessageId());
         if (alreadyConfirmed) {

@@ -35,6 +35,7 @@ public class BppInitController {
         log.info("Received /init from BAP: {}, transaction_id: {}", request.getContext().getBapId(), request.getContext().getTransactionId());
         schemaValidator.validateRequest(request);
         schemaValidator.validateOrderContext(request.getContext());
+        schemaValidator.validatePrepaid(request, false);
         OndcTransaction txn = OndcTransaction.builder().transactionId(request.getContext().getTransactionId()).messageId(request.getContext().getMessageId()).action("init").bapId(request.getContext().getBapId()).bppId(request.getContext().getBppId()).state("RECEIVED").build();
         transactionRepository.save(txn);
         // ACK immediately, then dispatch async init processing

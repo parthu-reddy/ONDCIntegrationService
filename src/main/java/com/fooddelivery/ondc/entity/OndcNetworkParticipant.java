@@ -4,7 +4,7 @@ import com.fooddelivery.ondc.registry.SubscriptionStatus;
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.UUID;
 
 /**
@@ -39,10 +39,10 @@ public class OndcNetworkParticipant {
     private String country;
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
-    private LocalDateTime createdAt;
+    private Instant createdAt;
     @UpdateTimestamp
     @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
+    private Instant updatedAt;
     @Version
     private Long version;
 
@@ -72,9 +72,9 @@ public class OndcNetworkParticipant {
         @java.lang.SuppressWarnings("all")
         private String country;
         @java.lang.SuppressWarnings("all")
-        private LocalDateTime createdAt;
+        private Instant createdAt;
         @java.lang.SuppressWarnings("all")
-        private LocalDateTime updatedAt;
+        private Instant updatedAt;
         @java.lang.SuppressWarnings("all")
         private Long version;
 
@@ -185,7 +185,7 @@ public class OndcNetworkParticipant {
          * @return {@code this}.
          */
         @java.lang.SuppressWarnings("all")
-        public OndcNetworkParticipant.OndcNetworkParticipantBuilder createdAt(final LocalDateTime createdAt) {
+        public OndcNetworkParticipant.OndcNetworkParticipantBuilder createdAt(final Instant createdAt) {
             this.createdAt = createdAt;
             return this;
         }
@@ -194,7 +194,7 @@ public class OndcNetworkParticipant {
          * @return {@code this}.
          */
         @java.lang.SuppressWarnings("all")
-        public OndcNetworkParticipant.OndcNetworkParticipantBuilder updatedAt(final LocalDateTime updatedAt) {
+        public OndcNetworkParticipant.OndcNetworkParticipantBuilder updatedAt(final Instant updatedAt) {
             this.updatedAt = updatedAt;
             return this;
         }
@@ -281,12 +281,12 @@ public class OndcNetworkParticipant {
     }
 
     @java.lang.SuppressWarnings("all")
-    public LocalDateTime getCreatedAt() {
+    public Instant getCreatedAt() {
         return this.createdAt;
     }
 
     @java.lang.SuppressWarnings("all")
-    public LocalDateTime getUpdatedAt() {
+    public Instant getUpdatedAt() {
         return this.updatedAt;
     }
 
@@ -351,12 +351,12 @@ public class OndcNetworkParticipant {
     }
 
     @java.lang.SuppressWarnings("all")
-    public void setCreatedAt(final LocalDateTime createdAt) {
+    public void setCreatedAt(final Instant createdAt) {
         this.createdAt = createdAt;
     }
 
     @java.lang.SuppressWarnings("all")
-    public void setUpdatedAt(final LocalDateTime updatedAt) {
+    public void setUpdatedAt(final Instant updatedAt) {
         this.updatedAt = updatedAt;
     }
 
@@ -370,7 +370,7 @@ public class OndcNetworkParticipant {
     }
 
     @java.lang.SuppressWarnings("all")
-    public OndcNetworkParticipant(final UUID id, final String subscriberId, final String uniqueKeyId, final String signingPublicKey, final String encryptionPublicKey, final String subscriberUrl, final Integer opsNo, final SubscriptionStatus status, final String domain, final String city, final String country, final LocalDateTime createdAt, final LocalDateTime updatedAt, final Long version) {
+    public OndcNetworkParticipant(final UUID id, final String subscriberId, final String uniqueKeyId, final String signingPublicKey, final String encryptionPublicKey, final String subscriberUrl, final Integer opsNo, final SubscriptionStatus status, final String domain, final String city, final String country, final Instant createdAt, final Instant updatedAt, final Long version) {
         this.id = id;
         this.subscriberId = subscriberId;
         this.uniqueKeyId = uniqueKeyId;

@@ -70,7 +70,7 @@ The ONDC architecture defines specific flow IDs to handle complex e-commerce sce
 | **Flow 7** | Catalog Rejection | A BAP rejects a seller's catalog immediately after on\_search due to policy or quality non-compliance12. |
 | **Flow 002** | Self-Pickup | Customer elects to collect the order. Fulfillment type is strictly Self-Pickup. The flow terminates at Order-picked-up12. |
 | **Flow 005** | Force Cancel | A seller-initiated cancellation (e.g., a kitchen disaster) triggered after the order was already packed or picked up12. |
-| **Flow 012** | Cash on Delivery (COD) | Payment type is set to ON-FULFILLMENT. Crucially, settlement details are provided in confirm rather than on\_init12. |
+| **Flow 012** | Cash on Delivery (COD) — **not supported; refused** | The platform is prepaid-only. The BPP accepts payment type ON-ORDER only: an init or confirm carrying ON-FULFILLMENT (or any other type) is NACKed with a DOMAIN-ERROR by `OndcSchemaValidator.validatePrepaid` (2026-09-26). |
 | **Flows 0091-0098** | Promotional Offer Flows | Handles discounts, Buy X Get Y, freebies, slab-based offers, combo offers, and financing offers12. |
 
 ### **4.5 Fulfillment State Machine and Telemetry (status and track)**

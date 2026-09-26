@@ -90,7 +90,8 @@ public ConfirmEventProcessor(BapConfirmService bapConfirmService, IIdempotencyKe
     }
 
     @DltHandler
-    public void handleDlt(Object message, @Header(KafkaHeaders.RECEIVED_TOPIC) String topic) {
-        System.err.println("Message failed 5 times and sent to DLT: " + topic + " - " + message);
+    public void handleDlt(Object message, @Header(KafkaHeaders.RECEIVED_TOPIC) String topic, @Header(KafkaHeaders.RECEIVED_PARTITION) int partition,
+                          @Header(KafkaHeaders.OFFSET) long offset) {
+        log.error("Message failed 5 times and sent to DLT: {} - {} replay={}", topic, message, com.fooddelivery.common.util.KafkaHeaderUtils.deadLetterPosition(topic, partition, offset));
     }
 }

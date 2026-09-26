@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.UUID;
 
 /**
@@ -39,10 +39,10 @@ public class OndcSettlementRecord {
     private String errorDetails;
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
-    private LocalDateTime createdAt;
+    private Instant createdAt;
     @UpdateTimestamp
     @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
+    private Instant updatedAt;
     @Version
     private Long version;
 
@@ -72,9 +72,9 @@ public class OndcSettlementRecord {
         @java.lang.SuppressWarnings("all")
         private String errorDetails;
         @java.lang.SuppressWarnings("all")
-        private LocalDateTime createdAt;
+        private Instant createdAt;
         @java.lang.SuppressWarnings("all")
-        private LocalDateTime updatedAt;
+        private Instant updatedAt;
         @java.lang.SuppressWarnings("all")
         private Long version;
 
@@ -185,7 +185,7 @@ public class OndcSettlementRecord {
          * @return {@code this}.
          */
         @java.lang.SuppressWarnings("all")
-        public OndcSettlementRecord.OndcSettlementRecordBuilder createdAt(final LocalDateTime createdAt) {
+        public OndcSettlementRecord.OndcSettlementRecordBuilder createdAt(final Instant createdAt) {
             this.createdAt = createdAt;
             return this;
         }
@@ -194,7 +194,7 @@ public class OndcSettlementRecord {
          * @return {@code this}.
          */
         @java.lang.SuppressWarnings("all")
-        public OndcSettlementRecord.OndcSettlementRecordBuilder updatedAt(final LocalDateTime updatedAt) {
+        public OndcSettlementRecord.OndcSettlementRecordBuilder updatedAt(final Instant updatedAt) {
             this.updatedAt = updatedAt;
             return this;
         }
@@ -281,12 +281,12 @@ public class OndcSettlementRecord {
     }
 
     @java.lang.SuppressWarnings("all")
-    public LocalDateTime getCreatedAt() {
+    public Instant getCreatedAt() {
         return this.createdAt;
     }
 
     @java.lang.SuppressWarnings("all")
-    public LocalDateTime getUpdatedAt() {
+    public Instant getUpdatedAt() {
         return this.updatedAt;
     }
 
@@ -351,12 +351,12 @@ public class OndcSettlementRecord {
     }
 
     @java.lang.SuppressWarnings("all")
-    public void setCreatedAt(final LocalDateTime createdAt) {
+    public void setCreatedAt(final Instant createdAt) {
         this.createdAt = createdAt;
     }
 
     @java.lang.SuppressWarnings("all")
-    public void setUpdatedAt(final LocalDateTime updatedAt) {
+    public void setUpdatedAt(final Instant updatedAt) {
         this.updatedAt = updatedAt;
     }
 
@@ -370,7 +370,7 @@ public class OndcSettlementRecord {
     }
 
     @java.lang.SuppressWarnings("all")
-    public OndcSettlementRecord(final UUID id, final String ondcTransactionId, final UUID internalOrderId, final String settlementType, final String collectorId, final String receiverId, final BigDecimal amount, final String currency, final String status, final String settlementReference, final String errorDetails, final LocalDateTime createdAt, final LocalDateTime updatedAt, final Long version) {
+    public OndcSettlementRecord(final UUID id, final String ondcTransactionId, final UUID internalOrderId, final String settlementType, final String collectorId, final String receiverId, final BigDecimal amount, final String currency, final String status, final String settlementReference, final String errorDetails, final Instant createdAt, final Instant updatedAt, final Long version) {
         this.id = id;
         this.ondcTransactionId = ondcTransactionId;
         this.internalOrderId = internalOrderId;

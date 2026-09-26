@@ -49,6 +49,35 @@ public class OndcSchemaValidator {
         requireNonBlank(ctx.getBppId(), "context.bpp_id");
     }
 
+    /** The one Beckn payment type this seller accepts: paid when the order is placed. */
+    public static final String PREPAID = "ON-ORDER";
+
+    /**
+     * Refuses any order that is not paid up front: this platform takes prepaid orders only. Beckn says
+     * when payment happens through the payment type, so without this a buyer app could confirm an
+     * order to be paid on delivery and it would be published for creation like any other. on_init
+     * only ever offers {@link #PREPAID}; a buyer confirming anything else is refused.
+     *
+     * @param paymentRequired true at /confirm, where the order is created; at /init the payment terms
+     *                        are still ours to propose, so an absent payment is allowed but a
+     *                        non-prepaid one is not
+     */
+    public void validatePrepaid(OndcRequest request, boolean paymentRequired) {
+        com.fooddelivery.ondc.dto.OndcOrder order = request.getMessage() == null ? null : request.getMessage().getOrder();
+        com.fooddelivery.ondc.dto.OndcOrder.OndcPaymentInfo payment = order == null ? null : order.getPayment();
+        String type = payment == null ? null : payment.getType();
+        if (type == null) {
+            if (paymentRequired) {
+                throw new IllegalArgumentException("Mandatory ONDC field missing: message.order.payment.type");
+            }
+            return;
+        }
+        if (!PREPAID.equals(type)) {
+            throw new IllegalArgumentException("Payment type " + type + " is not accepted: orders must be paid when placed ("
+                    + PREPAID + ")");
+        }
+    }
+
     private void requireNonBlank(String value, String fieldName) {
         if (value == null || value.isBlank()) {
             throw new IllegalArgumentException("Mandatory ONDC field missing: " + fieldName);
